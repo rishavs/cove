@@ -1,0 +1,13 @@
+name: cove
+version: 0.1.0
+
+authors:
+  - your-name-here <your-email-here>
+
+targets:
+  cove:
+    main: src/cove.cr
+
+crystal: 0.25.0
+
+license: MIT
