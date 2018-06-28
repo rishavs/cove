@@ -1,4 +1,5 @@
 module Cove
+    
     class Router
         def self.run(method, url, ctx)
             url = clean(url)
@@ -21,6 +22,9 @@ module Cove
                 end
                     
                 ctx.response.print json_string
+            when "/html/"
+                ctx.response.content_type = "text/html; charset=utf-8"    
+                ctx.response.print Cove::Views::Layout.render
             else
                 ctx.response.print "Bewarsies! This be wasteland!"
             end

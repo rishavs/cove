@@ -5,8 +5,7 @@ require "./cove/*"
 
 # TODO: Write documentation for `Cove`
 module Cove
-
-    
+   
     server = HTTP::Server.new([
         HTTP::ErrorHandler.new,
         HTTP::LogHandler.new,
