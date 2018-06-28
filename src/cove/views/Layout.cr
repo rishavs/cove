@@ -11,12 +11,7 @@ module Cove::Layout
                     <meta name="viewport" content="width=device-width, initial-scale=1">
             
                     <link rel="stylesheet" href="http://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.css">
-                    <link rel="stylesheet" href="main.css">
-                    <style type="text/css">
-                        .main.container {
-                            margin-top: 6em;
-                        }
-                    </style>
+                    #{Cove::Views.css}
                 </head>
                 <body>
                     #{Cove::Views.navbar}
@@ -27,7 +22,7 @@ module Cove::Layout
             
                     <script src="http://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
                     <script src="http://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.js"></script>
-                    <script src="main.js"></script>   
+                    #{Cove::Views.js}
                 </body>
             </html>
         HTML
