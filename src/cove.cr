@@ -2,13 +2,15 @@ require "http/server"
 require "json"
 
 require "./cove/*"
+require "./helpers/*"
 
 # TODO: Write documentation for `Cove`
 module Cove
    
     server = HTTP::Server.new([
         HTTP::ErrorHandler.new,
-        HTTP::LogHandler.new,
+        # HTTP::LogHandler.new,
+        Cove::Logger.new,
     ]) do |context|
         context.response.content_type = "text/plain"
 
