@@ -1,9 +1,6 @@
-# require 'Home.cr'
-
-module Cove::Views
-    class Layout
-
-        @@html = <<-HTML
+module Cove::Layout
+    def self.render(page)
+        html = <<-HTML
             <!doctype html>
             <html class="no-js" lang="">
                 <head>
@@ -15,12 +12,17 @@ module Cove::Views
             
                     <link rel="stylesheet" href="http://cdn.jsdelivr.net/npm/semantic-ui@2.3.1/dist/semantic.min.css">
                     <link rel="stylesheet" href="main.css">
-            
+                    <style type="text/css">
+                        .main.container {
+                            margin-top: 6em;
+                        }
+                    </style>
                 </head>
                 <body>
+                    #{Cove::Views.navbar}
+
                     <div id = "home_page" class="ui main container pageExit">
-                        #{ add_page }
-                        #{ Cove::Views::Home.render }
+                        #{ page }
                     </div>
             
                     <script src="http://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha256-3edrmyuQ0w65f8gfBsqowzjJe2iM6n0nKciPUp8y+7E=" crossorigin="anonymous"></script>
@@ -29,15 +31,6 @@ module Cove::Views
                 </body>
             </html>
         HTML
-
-
-        def self.add_page
-            "<h4>Adding New Page</h4>"
-        end
-
-        def self.render
-            @@html
-        end
     end
 end
 
