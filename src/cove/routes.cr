@@ -1,3 +1,5 @@
+require "./views/**"
+
 module Cove
     class Router
         def self.run(method, url, ctx)
