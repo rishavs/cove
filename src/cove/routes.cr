@@ -2,31 +2,27 @@ require "./views/**"
 
 module Cove
     class Router
+
         def self.run(method, url, ctx)
             url = clean(url)
-            case url
-            when "/hola/"
+
+            path = {url, method}
+
+            case path
+            when {"/hola/",     "GET"}
                 ctx.response.print "Yo buddy!"
-            when "/json/"
-                ctx.response.content_type = "application/json"
-                json_string = JSON.build do |json|
-                    json.object do
-                        json.field "name", "foo"
-                        json.field "values" do
-                            json.array do
-                                json.number 1
-                                json.number 2
-                                json.number 3
-                            end
-                        end
-                    end
-                end
-                    
-                ctx.response.print json_string
-            when "/about/"
+            when {"/about/",    "GET"}
                 ctx.response.content_type = "text/html; charset=utf-8"    
                 ctx.response.print Cove::Layout.render(Cove::Views.about)
-            when "/"
+
+            when {"/register/", "GET"}
+                ctx.response.content_type = "text/html; charset=utf-8"    
+                ctx.response.print Cove::Layout.render(Cove::Views.register)
+            when {"/register/", "POST"}
+                ctx.response.content_type = "text/html; charset=utf-8"   
+                store = Cove::Auth.register(ctx)
+                ctx.response.print store
+            when {"/", "GET"}
                 ctx.response.content_type = "text/html; charset=utf-8"    
                 ctx.response.print Cove::Layout.render(Cove::Views.home)
             else

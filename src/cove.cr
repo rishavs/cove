@@ -1,6 +1,8 @@
 require "http/server"
 require "json"
 
+require "./cove/actions/*"
+require "./cove/views/*"
 require "./cove/*"
 require "./helpers/*"
 
