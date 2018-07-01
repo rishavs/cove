@@ -1,8 +1,8 @@
 module Cove::Views
-    def self.welcome
+    def self.welcome (store)
         html = <<-HTML
-            <h1>ABOUT ME:</h1>
-            <p> I are awesome</p>
+            <h1>Hello #{store["data"]["username"]}</h1>
+            <p> Your UserId is: #{store["data"]["userid"]}</p>
         HTML
     end
 end

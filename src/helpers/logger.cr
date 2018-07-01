@@ -31,4 +31,4 @@ class Cove::Logger < HTTP::LogHandler
   
       "#{(millis * 1000).round(2)}µs"
     end
-  end
+end

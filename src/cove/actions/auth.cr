@@ -5,9 +5,10 @@ module Cove
             username =  params.fetch("username")
             password =  params.fetch("password")
 
-            store = {"status" => "success", 
-            "message" => "User was success fully added", 
-            "Data" => {"userid" => "xxx", "username" => username}
+            store = {
+                "status" => "success", 
+                "message" => "User was success fully added", 
+                "data" => {"userid" => "xxx", "username" => username}
             }
         end
     end
