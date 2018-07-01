@@ -22,6 +22,7 @@ module Cove
                 ctx.response.content_type = "text/html; charset=utf-8"   
                 store = Cove::Auth.register(ctx)
                 ctx.response.print store
+                
             when {"/", "GET"}
                 ctx.response.content_type = "text/html; charset=utf-8"    
                 ctx.response.print Cove::Layout.render(Cove::Views.home)

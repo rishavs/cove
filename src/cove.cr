@@ -1,14 +1,22 @@
 require "http/server"
 require "json"
+require "dotenv"
+require "db"
+require "pg"
 
 require "./cove/actions/*"
 require "./cove/views/*"
 require "./cove/*"
 require "./helpers/*"
 
+
 # TODO: Write documentation for `Cove`
 module Cove
-   
+    Dotenv.load!
+    DB     = PG.connect ENV["DATABASE_URL"]
+    puts "Initializing Database"
+
+
     server = HTTP::Server.new([
         HTTP::ErrorHandler.new,
         # HTTP::LogHandler.new,
