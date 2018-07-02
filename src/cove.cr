@@ -13,8 +13,11 @@ require "./helpers/*"
 # TODO: Write documentation for `Cove`
 module Cove
     Dotenv.load!
-    DB     = PG.connect ENV["DATABASE_URL"]
-    puts "Initializing Database"
+    db     = PG.connect ENV["DATABASE_URL"]
+    puts "Connecting to Database..."
+
+    test_db = db.scalar "SELECT 'Hello from DB! Connection established.'"
+    pp test_db
 
 
     server = HTTP::Server.new([
