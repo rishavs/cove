@@ -1,0 +1,5 @@
+CREATE TABLE USRES(
+   UNQID  PRIMARY KEY,
+   USERNAME           TEXT      NOT NULL,
+   PASSWORD           TEXT      NOT NULL
+)

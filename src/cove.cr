@@ -16,7 +16,7 @@ module Cove
     db     = PG.connect ENV["DATABASE_URL"]
     puts "Connecting to Database..."
 
-    test_db = db.scalar "SELECT 'Hello from DB! Connection established.'"
+    test_db = db.scalar "SELECT 'Connection established! The DB sends its regards.'"
     pp test_db
 
 
