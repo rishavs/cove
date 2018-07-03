@@ -7,25 +7,21 @@ module Cove
                 username =  params.fetch("username")
                 password =  params.fetch("password")
                 
+                # Trim leading & trailing whitespace
+                username = username.downcase.lstrip.rstrip
+
                 # Validation checks
                 Cove::Validate.if_length(username, "username", 3, 32)
-                # Cove::Validate.if_unique(username, users)
+                Cove::Validate.if_length(password, "password", 3, 32)
+                Cove::Validate.if_unique(username, "username", "users")
 
-                # Transform some data
+                # Generate some data
                 unqid = UUID.random.to_s
                 password = Crypto::Bcrypt::Password.create(password).to_s
                 
                 # DB operations
-                db.exec "insert into users values ($1, $2, $3)", unqid, username, password
+                Cove::DB.exec "insert into users values ($1, $2, $3)", unqid, username, password
 
-
-            # rescue Cove::ValidationError
-            #     pp "Raised ValidationError"
-
-            #     store = {
-            #         "status" => "error", 
-            #         "message" => ex.message.to_s
-            #     }
             rescue ex
                 pp ex
                 store = {

@@ -11,16 +11,13 @@ require "./cove/views/*"
 require "./cove/*"
 require "./helpers/*"
 
-
-# TODO: Write documentation for `Cove`
 module Cove
     Dotenv.load!
-    db     = PG.connect ENV["DATABASE_URL"]
+    DB     = PG.connect ENV["DATABASE_URL"]
     puts "Connecting to Database..."
 
-    test_db = db.scalar "SELECT 'Connection established! The DB sends its regards.'"
+    test_db = DB.scalar "SELECT 'Connection established! The DB sends its regards.'"
     pp test_db
-
 
     server = HTTP::Server.new([
         HTTP::ErrorHandler.new,

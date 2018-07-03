@@ -6,5 +6,8 @@ module Cove
         def self.form_params(body : Nil)
             HTTP::Params.parse("")
         end
+        def self.whitespace_trimmer(param)
+            
+        end
     end
 end
