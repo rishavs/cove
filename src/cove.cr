@@ -3,6 +3,8 @@ require "json"
 require "dotenv"
 require "db"
 require "pg"
+require "crypto/bcrypt/password"
+require "uuid"
 
 require "./cove/actions/*"
 require "./cove/views/*"
