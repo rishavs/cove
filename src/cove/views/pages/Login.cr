@@ -1,9 +1,9 @@
 module Cove
     class Views
-        def self.register(store)
+        def self.login(store)
             html = <<-HTML
                 <article id="register_page">
-                    <h1>Register </h1>
+                    <h1> Login Page </h1>
                     <form class="ui form" id="register_form" action="/register" method="post">
                         <div class="field">
                             <label>Username</label>
@@ -42,4 +42,5 @@ module Cove
             HTML
         end
     end
+
 end

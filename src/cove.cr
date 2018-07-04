@@ -15,8 +15,7 @@ module Cove
     Dotenv.load!
     DB     = PG.connect ENV["DATABASE_URL"]
     pp "Connecting to Database..."
-    test_db = DB.scalar "SELECT 'Connection established! The DB sends its regards.'"
-    pp test_db
+    pp DB.scalar "SELECT 'Connection established! The DB sends its regards.'"
 
     server = HTTP::Server.new([
         HTTP::ErrorHandler.new,

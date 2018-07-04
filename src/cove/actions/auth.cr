@@ -24,16 +24,51 @@ module Cove
 
             rescue ex
                 pp ex
-                store = {
+                {
                     "status" => "error", 
                     "message" => ex.message.to_s
                 }
             else
-                store = {
+                {
                     "status" => "success", 
                     "message" => "User was success fully added", 
-                    "data" => {"userid" => unqid, "username" => username}
+                    "jsondata" => {"userid" => unqid, "username" => username}.to_json
                 }
+            end
+        end
+
+        def self.login(ctx)
+            begin
+                params =    Cove::Parse.form_params(ctx.request.body)
+                username =  params.fetch("username")
+                password =  params.fetch("password")
+                
+                # Trim leading & trailing whitespace
+                username = username.downcase.lstrip.rstrip
+
+                # Validation checks
+                Cove::Validate.if_exists(username, "username", "users")
+
+            rescue ex
+                pp ex
+                {
+                    "status" => "error", 
+                    "message" => ex.message.to_s
+                }
+            else
+                if user && Crypto::Bcrypt::Password.new(user.password_hash.not_nil!) == pass
+                    puts "The password matches"
+                    token = generate_jwt_token(user.unqid, user.username)
+                    {   "status": "success",
+                        "message": "Password was succesfully verified",
+                        "data": token
+                    }.to_json
+                else
+                    store = {
+                        "status" => "error", 
+                        "message" => ex.message.to_s
+                    }
+                end
             end
 
 
