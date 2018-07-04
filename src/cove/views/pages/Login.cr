@@ -4,7 +4,7 @@ module Cove
             html = <<-HTML
                 <article id="register_page">
                     <h1> Login Page </h1>
-                    <form class="ui form" id="register_form" action="/register" method="post">
+                    <form class="ui form" id="register_form" action="/login" method="post">
                         <div class="field">
                             <label>Username</label>
                             <input type="text" name="username" id="username" placeholder="Username" />

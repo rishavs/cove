@@ -1,6 +1,6 @@
 module Cove
     class Auth
-        def self.register(ctx)
+        def self.register_via_form(ctx)
 
             begin
                 params =    Cove::Parse.form_params(ctx.request.body)
@@ -37,7 +37,7 @@ module Cove
             end
         end
 
-        def self.login(ctx)
+        def self.login_via_form(ctx)
             begin
                 params =    Cove::Parse.form_params(ctx.request.body)
                 username =  params.fetch("username")
@@ -56,23 +56,24 @@ module Cove
                     "message" => ex.message.to_s
                 }
             else
-                if user && Crypto::Bcrypt::Password.new(user.password_hash.not_nil!) == pass
-                    puts "The password matches"
-                    token = generate_jwt_token(user.unqid, user.username)
-                    {   "status": "success",
-                        "message": "Password was succesfully verified",
-                        "data": token
-                    }.to_json
-                else
-                    store = {
-                        "status" => "error", 
-                        "message" => ex.message.to_s
-                    }
-                end
+                Auth.login(username, password)
             end
+        end
 
-
-
+        def self.login(username, password)
+            if user && Crypto::Bcrypt::Password.new(user.password_hash.not_nil!) == pass
+                puts "The password matches"
+                token = generate_jwt_token(user.unqid, user.username)
+                {   "status": "success",
+                    "message": "Password was succesfully verified",
+                    "data": token
+                }.to_json
+            else
+                store = {
+                    "status" => "error", 
+                    "message" => ex.message.to_s
+                }
+            end
         end
     end
 end
