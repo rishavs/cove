@@ -1,6 +1,6 @@
 module Cove
     class Auth
-        def self.register_via_form(ctx)
+        def self.register(ctx)
 
             begin
                 params =    Cove::Parse.form_params(ctx.request.body)
@@ -37,7 +37,7 @@ module Cove
             end
         end
 
-        def self.login_via_form(ctx)
+        def self.login_form(ctx)
             begin
                 params =    Cove::Parse.form_params(ctx.request.body)
                 username =  params.fetch("username")
@@ -49,6 +49,7 @@ module Cove
                 # Validation checks
                 Cove::Validate.if_exists(username, "username", "users")
 
+                token = Auth.login(username, password)
             rescue ex
                 pp ex
                 {
@@ -56,24 +57,24 @@ module Cove
                     "message" => ex.message.to_s
                 }
             else
-                Auth.login(username, password)
+                {   
+                    "status" => "success",
+                    "message" => "Password was succesfully verified",
+                    "data" => token
+                }
             end
         end
 
         def self.login(username, password)
-            if user && Crypto::Bcrypt::Password.new(user.password_hash.not_nil!) == pass
+            password_hash = DB.scalar "select password from users where username = $1 LIMIT 1", username
+            if Crypto::Bcrypt::Password.new(password_hash.to_s) == password
                 puts "The password matches"
-                token = generate_jwt_token(user.unqid, user.username)
-                {   "status": "success",
-                    "message": "Password was succesfully verified",
-                    "data": token
-                }.to_json
-            else
-                store = {
-                    "status" => "error", 
-                    "message" => ex.message.to_s
-                }
+                # token = generate_jwt_token(user.unqid, user.username)
+            else 
+                
+                puts "The password DOESN'T matches"
             end
+
         end
     end
 end
