@@ -46,7 +46,6 @@ module Cove
                 # Trim leading & trailing whitespace
                 username = username.downcase.lstrip.rstrip
 
-                token = Auth.get_jwt_if_match(username, password)
             rescue ex
                 pp ex
                 {
@@ -54,32 +53,37 @@ module Cove
                     "message" => ex.message.to_s
                 }
             else
-                if token 
+                token = Auth.get_jwt_if_match(username, password)
+            end
+        end
+
+        # Created this separate function just so I can login regight after registering
+        def self.get_jwt_if_match(username, password)
+            begin
+                user = DB.query_one "select unqid, username, password from users where username = $1", username, as: {unqid: String, username: String, password: String}
+            rescue ex
+                pp ex
+                {
+                    "status" => "error", 
+                    "message" => "The user doesn't exists"
+                }
+            else
+                if Crypto::Bcrypt::Password.new(user["password"].to_s) == password
+                    puts "The password matches"
+                    token = create_jwt(user["unqid"], user["username"])
                     {   
                         "status" => "success",
                         "message" => "Password was succesfully verified",
                         "data" => token
                     }
-                else
+                else 
+                    puts "The password DOESN'T matches"
                     {   
                         "status" => "error",
                         "message" => "The password is wrong",
                     }
                 end
             end
-        end
-
-        def self.get_jwt_if_match(username, password)
-            user = DB.query_one "select unqid, username, password from users where username = $1", username, as: {unqid: String, username: String, password: String}
-
-            if Crypto::Bcrypt::Password.new(user["password"].to_s) == password
-                puts "The password matches"
-                create_jwt(user["unqid"], user["username"])
-            else 
-                puts "The password DOESN'T matches"
-                nil
-            end
-
         end
 
         def self.verify_jwt (env)
