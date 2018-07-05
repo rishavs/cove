@@ -97,12 +97,11 @@ module Cove
             if ctx.request.cookies.has_key?("usertoken")
                 pp "Parsing token: " + ctx.request.cookies["usertoken"].value
                 payload, header = JWT.decode(ctx.request.cookies["usertoken"].value, ENV["SECRET_JWT"], "HS256")
-                { "unqid" => payload["unqid"], "username" => payload["username"]}
+                { "loggedin" => true, "unqid" => payload["unqid"], "username" => payload["username"]}
             end
         end
-        def self.verify_jwt (env)
-            auth_token = env.request.headers["Authorization"].lchop("Bearer ")
-            author = Actions::Auth.parse_jwt_token(auth_token)
+        def self.guard (env)
+
         end
 
         def self.create_jwt (uid, uname)
@@ -110,11 +109,5 @@ module Cove
             payload = { "unqid" => uid, "username" => uname, "exp" => exp }
             JWT.encode(payload, ENV["SECRET_JWT"], "HS256")
         end
-
-        def self.parse_jwt (token)
-            payload, header = JWT.decode(token, ENV["SECRET_JWT"], "HS256")
-            user = { "unqid" => payload["unqid"], "username" => payload["username"]}
-        end
-
     end
 end

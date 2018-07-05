@@ -6,15 +6,17 @@ module Cove
         def self.run(method, url, ctx)
             url = clean(url)
             path = {url, method}
+
+            currentuser = Cove::Auth.check?(ctx)
             store = {
                 "status" => "none", 
                 "message" => "none",
-                "currentuser" => "none"
+                "currentuser" => currentuser
             }
 
             case path
             when {"/secret/",     "GET"}
-                currentuser = Cove::Auth.check?(ctx)
+                Cove::Auth.guard(currentuser)
                 if currentuser
                     pp currentuser
                     ctx.response.print "Yo buddy! This secret is yours!"
