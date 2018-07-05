@@ -8,12 +8,19 @@ module Cove
             path = {url, method}
             store = {
                 "status" => "none", 
-                "message" => "none"
+                "message" => "none",
+                "currentuser" => "none"
             }
 
             case path
-            when {"/hola/",     "GET"}
-                ctx.response.print "Yo buddy!"
+            when {"/secret/",     "GET"}
+                currentuser = Cove::Auth.check?(ctx)
+                if currentuser
+                    pp currentuser
+                    ctx.response.print "Yo buddy! This secret is yours!"
+                else
+                    ctx.response.print "This secret isn't meant for you!"
+                end
             when {"/about/",    "GET"}
                 ctx.response.content_type = "text/html; charset=utf-8"    
                 ctx.response.print Cove::Layout.render(Cove::Views.about(store), store)
@@ -41,6 +48,7 @@ module Cove
                 if store["status"] == "error"
                     ctx.response.print Cove::Layout.render(Cove::Views.login(store), store)
                 else
+                    ctx.response.headers["Set-Cookie"] = HTTP::Cookie.new("usertoken", store["data"]["token"], "/", Time.now + 12.hours).to_set_cookie_header
                     ctx.response.print Cove::Layout.render(Cove::Views.welcome(store), store)
                 end
 

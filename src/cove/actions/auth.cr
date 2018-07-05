@@ -93,7 +93,13 @@ module Cove
                 end
             end
         end
-
+        def self.check?(ctx)
+            if ctx.request.cookies.has_key?("usertoken")
+                pp "Parsing token: " + ctx.request.cookies["usertoken"].value
+                payload, header = JWT.decode(ctx.request.cookies["usertoken"].value, ENV["SECRET_JWT"], "HS256")
+                { "unqid" => payload["unqid"], "username" => payload["username"]}
+            end
+        end
         def self.verify_jwt (env)
             auth_token = env.request.headers["Authorization"].lchop("Bearer ")
             author = Actions::Auth.parse_jwt_token(auth_token)

@@ -28,9 +28,6 @@ module Cove
         route_url = context.request.resource
         route_method = context.request.method
 
-        context.response.headers["Set-Cookie"] = "foo=bar; HttpOnly"
-        # pp typeof(HTTP::Cookie.new("foo", "bar", "/admin", Time.now + 12.hours, secure: true))
-        # context.response.headers["Set-Cookie"] = HTTP::Cookie.new("foo", "bar", "/admin", Time.now + 12.hours, secure: true)
         Router.run(route_method, route_url, context)
         
         # pp context
