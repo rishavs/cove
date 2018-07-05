@@ -37,8 +37,12 @@ module Cove
                 ctx.response.print Cove::Layout.render(Cove::Views.login(store), store)
             when {"/login/", "POST"}
                 ctx.response.content_type = "text/html; charset=utf-8"   
-                store = Cove::Auth.login_form(ctx)
-                ctx.response.print store
+                store = Cove::Auth.login(ctx)
+                if store["status"] == "error"
+                    ctx.response.print Cove::Layout.render(Cove::Views.login(store), store)
+                else
+                    ctx.response.print store
+                end
 
             # Catch-all routes    
             when {"/", "GET"}

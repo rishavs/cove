@@ -37,7 +37,7 @@ module Cove
             end
         end
 
-        def self.login_form(ctx)
+        def self.login(ctx)
             begin
                 params =    Cove::Parse.form_params(ctx.request.body)
                 username =  params.fetch("username")
@@ -46,10 +46,7 @@ module Cove
                 # Trim leading & trailing whitespace
                 username = username.downcase.lstrip.rstrip
 
-                # Validation checks
-                Cove::Validate.if_exists(username, "username", "users")
-
-                token = Auth.login(username, password)
+                token = Auth.get_jwt_if_match(username, password)
             rescue ex
                 pp ex
                 {
@@ -57,24 +54,49 @@ module Cove
                     "message" => ex.message.to_s
                 }
             else
-                {   
-                    "status" => "success",
-                    "message" => "Password was succesfully verified",
-                    "data" => token
-                }
+                if token 
+                    {   
+                        "status" => "success",
+                        "message" => "Password was succesfully verified",
+                        "data" => token
+                    }
+                else
+                    {   
+                        "status" => "error",
+                        "message" => "The password is wrong",
+                    }
+                end
             end
         end
 
-        def self.login(username, password)
-            password_hash = DB.scalar "select password from users where username = $1 LIMIT 1", username
-            if Crypto::Bcrypt::Password.new(password_hash.to_s) == password
+        def self.get_jwt_if_match(username, password)
+            user = DB.query_one "select unqid, username, password from users where username = $1", username, as: {unqid: String, username: String, password: String}
+
+            if Crypto::Bcrypt::Password.new(user["password"].to_s) == password
                 puts "The password matches"
-                # token = generate_jwt_token(user.unqid, user.username)
+                create_jwt(user["unqid"], user["username"])
             else 
-                
                 puts "The password DOESN'T matches"
+                nil
             end
 
         end
+
+        def self.verify_jwt (env)
+            auth_token = env.request.headers["Authorization"].lchop("Bearer ")
+            author = Actions::Auth.parse_jwt_token(auth_token)
+        end
+
+        def self.create_jwt (uid, uname)
+            exp = Time.now.epoch + 6000000
+            payload = { "unqid" => uid, "username" => uname, "exp" => exp }
+            JWT.encode(payload, ENV["SECRET_JWT"], "HS256")
+        end
+
+        def self.parse_jwt (token)
+            payload, header = JWT.decode(token, ENV["SECRET_JWT"], "HS256")
+            user = { "unqid" => payload["unqid"], "username" => payload["username"]}
+        end
+
     end
 end

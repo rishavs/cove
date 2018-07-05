@@ -5,6 +5,7 @@ require "db"
 require "pg"
 require "crypto/bcrypt/password"
 require "uuid"
+require "jwt"
 
 require "./cove/actions/*"
 require "./cove/views/*"

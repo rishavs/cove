@@ -8,6 +8,10 @@ shards:
     github: gdotdesign/cr-dotenv
     version: 0.1.0
 
+  jwt:
+    github: crystal-community/jwt
+    version: 0.3.0
+
   pg:
     github: will/crystal-pg
     version: 0.15.0
