@@ -4,7 +4,7 @@ module Cove
             html = <<-HTML
                 <article id="login_page">
                     <h1> Login Page </h1>
-                    <form class="ui form" id="register_form" action="/login" method="post">
+                    <form class="ui form" id="register_form" action="/login" method="post" onsubmit="reset_password_input()">
                         <div class="field">
                             <label>Username</label>
                             <input type="text" name="username" id="username" placeholder="Username" />
@@ -38,6 +38,13 @@ module Cove
                             tp.classList.add("circular", "eye", "slash", "outline", "link", "icon")
                         }
                     } 
+
+                    const reset_password_input = () => {
+                        var p = document.getElementById("password");
+                        if (p.type === "text") {
+                            p.type = "password"
+                        }
+                    }
                 </script>
             HTML
         end
