@@ -46,6 +46,10 @@ module Cove
                 # Trim leading & trailing whitespace
                 username = username.downcase.lstrip.rstrip
 
+                # Validation checks
+                Cove::Validate.if_length(username, "username", 3, 32)
+                Cove::Validate.if_length(password, "password", 3, 32)
+
             rescue ex
                 pp ex
                 {
@@ -74,7 +78,11 @@ module Cove
                     {   
                         "status" => "success",
                         "message" => "Password was succesfully verified",
-                        "data" => token
+                        "data" => {
+                            "unqid" => user["unqid"],
+                            "username" => user["username"],
+                            "token" => token
+                        }
                     }
                 else 
                     puts "The password DOESN'T matches"

@@ -41,7 +41,7 @@ module Cove
                 if store["status"] == "error"
                     ctx.response.print Cove::Layout.render(Cove::Views.login(store), store)
                 else
-                    ctx.response.print store
+                    ctx.response.print Cove::Layout.render(Cove::Views.welcome(store), store)
                 end
 
             # Catch-all routes    
