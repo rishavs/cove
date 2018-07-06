@@ -1,22 +1,34 @@
 module Cove
     class Views
         def self.navbar(store)
-            html = <<-HTML
-                <div class="ui fixed menu">
-                <div class="ui container">
-                    <a href="/" class="header item" >
-                        Digglu
-                    </a>
+            if store.currentuser["loggedin"] == "true"
+                navcontrols = <<-HTML
                     <div class="item">
-                        <a href="/about" >About</a>
+                        <a href="/logout" >Logout</a>
                     </div>
+                HTML
+            else
+                navcontrols = <<-HTML
                     <div class="item">
                         <a href="/register" >Register</a>
                     </div>
                     <div class="item">
                         <a href="/login" class="ui blue button" >Login</a>
                     </div>
-                </div>
+                HTML
+            end
+
+            html = <<-HTML
+                <div class="ui fixed menu">
+                    <div class="ui container">
+                        <a href="/" class="header item" >
+                            Digglu
+                        </a>
+                        <div class="item">
+                            <a href="/about" >About</a>
+                        </div>
+                        #{navcontrols}
+                    </div>
                 </div>
             HTML
         end

@@ -2,6 +2,8 @@ module Cove
     class Auth
         def self.register(ctx)
 
+            store = Cove::Store.new
+
             begin
                 params =    Cove::Parse.form_params(ctx.request.body)
                 username =  params.fetch("username")
@@ -24,20 +26,24 @@ module Cove
 
             rescue ex
                 pp ex
-                {
-                    "status" => "error", 
-                    "message" => ex.message.to_s
-                }
+                store.status = "error"
+                store.message = ex.message.to_s
+                store.data = {"none" => "none"}
+
+                store
             else
-                {
-                    "status" => "success", 
-                    "message" => "User was success fully added", 
-                    "jsondata" => {"userid" => unqid, "username" => username}.to_json
-                }
+                store.status = "success"
+                store.message = "User was success fully added"
+                store.data = {"userid" => unqid, "username" => username}
+
+                store
             end
         end
 
         def self.login(ctx)
+
+            store = Cove::Store.new
+
             begin
                 params =    Cove::Parse.form_params(ctx.request.body)
                 username =  params.fetch("username")
@@ -52,52 +58,61 @@ module Cove
 
             rescue ex
                 pp ex
-                {
-                    "status" => "error", 
-                    "message" => ex.message.to_s
-                }
+                store.status = "error"
+                store.message = ex.message.to_s
+                store.data = {"none" => "none"}
+
+                store
             else
-                token = Auth.get_jwt_if_match(username, password)
+                Auth.get_jwt_if_match(username, password)
             end
         end
 
         # Created this separate function just so I can login regight after registering
         def self.get_jwt_if_match(username, password)
+            
+            store = Cove::Store.new
+
             begin
                 user = DB.query_one "select unqid, username, password from users where username = $1", username, as: {unqid: String, username: String, password: String}
             rescue ex
                 pp ex
-                {
-                    "status" => "error", 
-                    "message" => "The user doesn't exists"
-                }
+                store.status = "error"
+                store.message = "The user doesn't exists"
+                store.data = {"none" => "none"}
+
+                store
             else
                 if Crypto::Bcrypt::Password.new(user["password"].to_s) == password
                     puts "The password matches"
                     token = create_jwt(user["unqid"], user["username"])
-                    {   
-                        "status" => "success",
-                        "message" => "Password was succesfully verified",
-                        "data" => {
-                            "unqid" => user["unqid"],
-                            "username" => user["username"],
-                            "token" => token
-                        }
+                    
+                    store.status = "success"
+                    store.message = "Password was succesfully verified"
+                    store.data = {
+                        "unqid" => user["unqid"],
+                        "username" => user["username"],
+                        "token" => token.to_s
                     }
+
+                    store
                 else 
                     puts "The password DOESN'T matches"
-                    {   
-                        "status" => "error",
-                        "message" => "The password is wrong",
-                    }
+                    store.status = "error"
+                    store.message = "The password is wrong"
+                    store.data = {"none" => "none"}
+
+                    store
                 end
             end
         end
-        def self.check?(ctx)
+        def self.check(ctx)
             if ctx.request.cookies.has_key?("usertoken")
-                pp "Parsing token: " + ctx.request.cookies["usertoken"].value
+
                 payload, header = JWT.decode(ctx.request.cookies["usertoken"].value, ENV["SECRET_JWT"], "HS256")
-                { "loggedin" => true, "unqid" => payload["unqid"], "username" => payload["username"]}
+                { "loggedin" => "true", "unqid" => payload["unqid"].to_s, "username" => payload["username"].to_s}
+            else
+                {"loggedin" => "none", "unqid" => "none", "username" => "none" }
             end
         end
         def self.guard (env)
