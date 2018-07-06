@@ -3,7 +3,7 @@ module Cove
         def self.js
             html = <<-HTML
                 <script>
-                    console.log("Hallo from the Cove")
+                    console.log("Hallo. Dis be browser")
                 </script>
             HTML
         end

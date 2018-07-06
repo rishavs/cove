@@ -107,7 +107,7 @@ module Cove
             end
         end
         def self.check(ctx)
-            if ctx.request.cookies.has_key?("usertoken")
+            if ctx.request.cookies.has_key?("usertoken") && ctx.request.cookies["usertoken"].value != "none"
 
                 payload, header = JWT.decode(ctx.request.cookies["usertoken"].value, ENV["SECRET_JWT"], "HS256")
                 { "loggedin" => "true", "unqid" => payload["unqid"].to_s, "username" => payload["username"].to_s}

@@ -27,6 +27,9 @@ module Cove
                         <div class="item">
                             <a href="/about" >About</a>
                         </div>
+                        <div class="item">
+                            <a href="/secret" >Secret</a>
+                        </div>
                         #{navcontrols}
                     </div>
                 </div>

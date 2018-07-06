@@ -13,9 +13,7 @@ module Cove
         def self.run(method, url, ctx)
             url = clean(url)
             path = {url, method}
-
             store = Store.new
-
             store.currentuser = Cove::Auth.check(ctx)
 
             case path
@@ -28,6 +26,7 @@ module Cove
             else
                 ctx.response.print "Sorry anon. This secret isn't meant for you!"
             end
+
             # Routes for Register resource
             when {"/register/", "GET"}
                 ctx.response.content_type = "text/html; charset=utf-8"    
@@ -38,7 +37,6 @@ module Cove
                 store.status =      payload.status
                 store.message =     payload.message
                 store.data =        payload.data
-                
                 if  store.status == "error"
                     ctx.response.print Cove::Layout.render(Cove::Views.register(store), store)
                 else
@@ -55,13 +53,17 @@ module Cove
                 store.status =      payload.status
                 store.message =     payload.message
                 store.data =        payload.data
-
                 if store.status == "error"
                     ctx.response.print Cove::Layout.render(Cove::Views.login(store), store)
                 else
-                    ctx.response.headers["Set-Cookie"] = HTTP::Cookie.new("usertoken", store.data["token"], "/", Time.now + 12.hours).to_set_cookie_header
-                    ctx.response.print Cove::Layout.render(Cove::Views.welcome(store), store)
+                    usercookie = HTTP::Cookie.new("usertoken", store.data["token"], "/", Time.now + 12.hours)
+                    ctx.response.headers["Set-Cookie"] = usercookie.to_set_cookie_header
+                    redirect("/", ctx)
                 end
+            when {"/logout/", "GET"}
+                usercookie = HTTP::Cookie.new("usertoken", "none", "/", Time.now + 12.hours)
+                ctx.response.headers["Set-Cookie"] = usercookie.to_set_cookie_header
+                redirect("/", ctx)
 
             # Catch-all routes    
             when {"/", "GET"}
@@ -71,6 +73,11 @@ module Cove
                 ctx.response.content_type = "text/html; charset=utf-8"    
                 ctx.response.print Cove::Layout.render("404! Bewarsies! This be wasteland!", store)
             end
+        end
+
+        def self.redirect(path, ctx)
+            ctx.response.headers.add "Location", path
+            ctx.response.status_code = 302
         end
 
         def self.clean (url)

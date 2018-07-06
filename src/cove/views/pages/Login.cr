@@ -24,6 +24,8 @@ module Cove
                 </article>
                 
                 <script>
+                    // This script simply toggles the input field between password and text types.
+                    // This allows users to check the password they are writing without having to retype it.
                     const toggle_password = () => {
                         var p = document.getElementById("password");
                         var tp = document.getElementById("toggle_password");
@@ -38,7 +40,9 @@ module Cove
                             tp.classList.add("circular", "eye", "slash", "outline", "link", "icon")
                         }
                     } 
-
+                    
+                    // This script resets the inut to password type before submit.
+                    // This esnues that the browser is able to save the password as it is a recognised input type.
                     const reset_password_input = () => {
                         var p = document.getElementById("password");
                         if (p.type === "text") {
