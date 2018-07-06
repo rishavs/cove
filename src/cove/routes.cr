@@ -20,12 +20,20 @@ module Cove
             when {"/about/",    "GET"}
                 ctx.response.content_type = "text/html; charset=utf-8"    
                 ctx.response.print Cove::Layout.render(Cove::Views.about(store), store)
+            when {"/noanon/",    "GET"}
+                guard("anon", store.currentuser["loggedin"], ctx)
+                ctx.response.content_type = "text/html; charset=utf-8"    
+                ctx.response.print "Yo"
+            when {"/nologgy/",    "GET"}
+                guard("user", store.currentuser["loggedin"], ctx)
+                ctx.response.content_type = "text/html; charset=utf-8"    
+                ctx.response.print "Yo"
             when {"/secret/",     "GET"}
-            if store.currentuser["loggedin"] == "true"
-                ctx.response.print "Yo #{ store.currentuser["username"] }! This secret is yours!"
-            else
-                ctx.response.print "Sorry anon. This secret isn't meant for you!"
-            end
+                if store.currentuser["loggedin"] == "true"
+                    ctx.response.print "Yo #{ store.currentuser["username"] }! This secret is yours!"
+                else
+                    ctx.response.print "Sorry anon. This secret isn't meant for you!"
+                end
 
             # Routes for Register resource
             when {"/register/", "GET"}
@@ -72,6 +80,14 @@ module Cove
             else
                 ctx.response.content_type = "text/html; charset=utf-8"    
                 ctx.response.print Cove::Layout.render("404! Bewarsies! This be wasteland!", store)
+            end
+        end
+
+        def self.guard ( against, isloggedin, ctx)
+            if against == "user" && isloggedin == "true"
+                redirect("/", ctx)
+            elsif against == "anon" && isloggedin != "true"
+                redirect("/", ctx)
             end
         end
 

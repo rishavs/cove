@@ -115,10 +115,6 @@ module Cove
                 {"loggedin" => "none", "unqid" => "none", "username" => "none" }
             end
         end
-        def self.guard (env)
-
-        end
-
         def self.create_jwt (uid, uname)
             exp = Time.now.epoch + 6000000
             payload = { "unqid" => uid, "username" => uname, "exp" => exp }
