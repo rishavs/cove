@@ -13,9 +13,10 @@ module Cove
         def self.run(method, url, ctx)
             url = clean(url)
             path = {url, method}
+            # path = {resource, item, method}
             store = Store.new
             store.currentuser = Cove::Auth.check(ctx)
-
+            pp url.split("/")
             case path
             when {"/about/",    "GET"}
                 ctx.response.content_type = "text/html; charset=utf-8"    
@@ -35,6 +36,24 @@ module Cove
                     ctx.response.print "Sorry anon. This secret isn't meant for you!"
                 end
 
+                # Routes for Posts resource
+            when {"/post/new/", "GET"}
+                guard("anon", store.currentuser["loggedin"], ctx)
+                ctx.response.content_type = "text/html; charset=utf-8"    
+                ctx.response.print Cove::Layout.render(Cove::Views.new_post(store), store)
+            when {"/post/new/", "POST"}
+                guard("anon", store.currentuser["loggedin"], ctx)
+                ctx.response.content_type = "text/html; charset=utf-8"   
+                payload = Cove::Posts.create(ctx, store.currentuser["unqid"])
+                store.status =      payload.status
+                store.message =     payload.message
+                store.data =        payload.data
+                if  store.status == "error"
+                    ctx.response.print Cove::Layout.render(Cove::Views.new_post(store), store)
+                else
+                    ctx.response.print store
+                end
+                
             # Routes for Register resource
             when {"/register/", "GET"}
                 ctx.response.content_type = "text/html; charset=utf-8"    
