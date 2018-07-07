@@ -9,8 +9,8 @@ module Cove
         property currentuser :  Hash(String, String) = {"loggedin" => "none", "unqid" => "none", "username" => "none" }
     end
     class Route 
-        property resource :       String = ""
-        property identifier :     String = ""
+        property resource :     String = ""
+        property identifier :   String = ""
         property verb :         String = ""
         
         def initialize(url : String)
@@ -27,23 +27,62 @@ module Cove
 
     class Router
         def self.run(method, url, ctx)
-            url = clean(url)
-            path = {url, method}
-            # path = {resource, item, method}
             store = Store.new
             store.currentuser = Cove::Auth.check(ctx)
             
-            rt = Route.new(url)
-            pp rt
+            route = Route.new(url)
 
-            case path
+            case {route.resource, route.identifier, route.verb, method}
             when {"about", "", "", "GET"}
-            when {"post", rt.identifier, "", "GET"}
-            when {"post", rt.identifier, "edit", "GET"}
-            when {"post", rt.identifier, "", "GET"}
-            when {"/about/", "", "", "GET"}
+                ctx.response.content_type = "text/html; charset=utf-8"    
+                ctx.response.print Cove::Layout.render(Cove::Views.about(store), store)
+            when {"post", route.identifier, "", "GET"}
+                puts "Looking for #{route.identifier} in #{route.resource}"
+            # when {"post", route.identifier, "edit", "GET"}
+            # when {"post", route.identifier, "", "GET"}
+            # when {"/about/", "", "", "GET"}
+                            
+            # Routes for Register resource
+            when {"register", "", "", "GET"}
+                ctx.response.content_type = "text/html; charset=utf-8"    
+                ctx.response.print Cove::Layout.render(Cove::Views.register(store), store)
+            when {"register", "", "", "POST"}
+                ctx.response.content_type = "text/html; charset=utf-8"   
+                payload = Cove::Auth.register(ctx)
+                store.status =      payload.status
+                store.message =     payload.message
+                store.data =        payload.data
+                if  store.status == "error"
+                    ctx.response.print Cove::Layout.render(Cove::Views.register(store), store)
+                else
+                    ctx.response.print store
+                end
+
+            # Routes for Login resource
+            # when {"/login/", "GET"}
+            #     ctx.response.content_type = "text/html; charset=utf-8"    
+            #     ctx.response.print Cove::Layout.render(Cove::Views.login(store), store)
+            # when {"/login/", "POST"}
+            #     ctx.response.content_type = "text/html; charset=utf-8"   
+            #     payload =  Cove::Auth.login(ctx)
+            #     store.status =      payload.status
+            #     store.message =     payload.message
+            #     store.data =        payload.data
+            #     if store.status == "error"
+            #         ctx.response.print Cove::Layout.render(Cove::Views.login(store), store)
+            #     else
+            #         usercookie = HTTP::Cookie.new("usertoken", store.data["token"], "/", Time.now + 12.hours)
+            #         ctx.response.headers["Set-Cookie"] = usercookie.to_set_cookie_header
+            #         redirect("/", ctx)
+            #     end
+            # when {"/logout/", "GET"}
+            #     usercookie = HTTP::Cookie.new("usertoken", "none", "/", Time.now + 12.hours)
+            #     ctx.response.headers["Set-Cookie"] = usercookie.to_set_cookie_header
+            #     redirect("/", ctx)
+
+
             # Catch-all routes    
-            when {"/", "GET"}
+            when {"", "", "", "GET"}
                 ctx.response.content_type = "text/html; charset=utf-8"    
                 ctx.response.print Cove::Layout.render(Cove::Views.home(store), store)
             else
