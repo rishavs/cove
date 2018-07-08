@@ -1,3 +1,28 @@
+
+/
+/p/
+/p/:id
+/p/:id/edit
+/p/new/create
+/u/:id/
+/u/me
+/u/me/edit
+/u/me/settings
+/u/me/create
+/u/me/login
+/u/me/logout
+
+/
+/p/show/:id
+/p/edit/:id/
+/p/new/
+/u/show/:id/
+/me/settings
+/me/register
+/me/login
+/me/logout
+
+
 CREATE TABLE USERS(
    UNQID TEXT PRIMARY KEY,
    USERNAME TEXT NOT NULL UNIQUE,

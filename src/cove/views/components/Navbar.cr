@@ -4,7 +4,7 @@ module Cove
             if store.currentuser["loggedin"] == "true"
                 navcontrols = <<-HTML
                     <div class="item">
-                        <a href="/post/new" class="ui blue button" >New Post</a>
+                        <a href="/p/new/" class="ui blue button" >New Post</a>
                     </div>
                     <div class="item">
                         <a href="/logout" >Logout</a>

@@ -3,7 +3,7 @@ module Cove
         def self.new_post(store)
             html = <<-HTML
                 <article id="new_post_page">
-                    <form class="ui form" id="new_post_form" action="/post/new/" method="post">
+                    <form class="ui form" id="new_post_form" action="/p/new/" method="post">
                         <div class="field">
                             <label class="label">Title</label>
                             <input class="input" name="title" type="text" placeholder="Title"/>

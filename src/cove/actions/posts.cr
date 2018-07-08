@@ -11,9 +11,9 @@ module Cove
                 authorid = userid
 
                 # Trim leading & trailing whitespace
-                title = title.downcase.lstrip.rstrip
-                link = link.downcase.lstrip.rstrip
-                content = content.downcase.lstrip.rstrip
+                title = title.lstrip.rstrip
+                link = link.lstrip.rstrip
+                content = content.lstrip.rstrip
 
                 # Validation checks
                 Cove::Validate.if_length(title, "title", 3, 128)
@@ -39,6 +39,43 @@ module Cove
                 store.data = {"postid" => unqid, "posttitle" => title}
 
                 store
+            end
+        end
+        def self.read(ctx, postid)
+            store = Cove::Store.new
+
+            begin
+                # DB operations
+                post = Cove::DB.query_one? "select unqid, title, content, link, authorid from posts where unqid = $1", postid, 
+                    as: {unqid: String, title: String, content: String, link: String, authorid: String}
+
+            rescue ex
+                pp ex
+                store.status = "error"
+                store.message = ex.message.to_s
+                store.data = {"none" => "none"}
+
+                store
+            else
+                if post != nil
+                    store.status = "success"
+                    store.message = "Post was successfully added"
+                    store.data = {
+                        "unqid" => post[:unqid], 
+                        "title" =>  post[:title], 
+                        "link" =>  post[:link], 
+                        "content" =>  post[:content], 
+                        "authorid" =>  post[:authorid]
+                    }
+
+                    store
+                else
+                    store.status = "error"
+                    store.message = "The post doesn't exists"
+                    store.data = {"none" => "none"}
+                    
+                    store
+                end
             end
         end
     end
