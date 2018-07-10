@@ -78,5 +78,25 @@ module Cove
                 end
             end
         end
+
+        def self.list(ctx)
+            store = Cove::Store.new
+            user = Cove::Auth.check(ctx)
+
+            begin
+               posts = Cove::DB.query_all "select unqid, title, content, link, authorid from posts",                   
+                    as: {unqid: String, title: String, content: String, link: String, authorid: String}
+            rescue error
+                pp error
+                store.status = "error"
+                store.message = error.message.to_s
+            else
+                store.status = "success"
+                store.message = "Received the db response"
+            
+                ctx.response.content_type = "text/html; charset=utf-8"    
+                ctx.response.print Cove::Layout.render( store, Cove::Views.home(posts))
+            end
+        end
     end
 end

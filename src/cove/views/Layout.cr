@@ -1,6 +1,6 @@
 module Cove
     class Layout
-        def self.render(page, store)
+        def self.render(store, page)
             html = <<-HTML
                 <!doctype html>
                 <html class="no-js" lang="">
