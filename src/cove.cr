@@ -13,7 +13,9 @@ require "./cove/*"
 require "./helpers/*"
 
 module Cove
-    Dotenv.load
+    if !ENV.has_key?("DEV")
+        Dotenv.load
+    end
     PORT = ENV["PORT"]
     DB     = PG.connect ENV["DATABASE_URL"]
 
