@@ -1,6 +1,6 @@
 module Cove
     class Views
-        def self.register(store)
+        def self.register()
             html = <<-HTML
                 <article id="register_page">
                     <h1>Register </h1>

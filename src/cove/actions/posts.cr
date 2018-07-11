@@ -45,43 +45,40 @@ module Cove
             store = Cove::Store.new
 
             begin
-                # DB operations
+                # Get nil if the post doesnt exists. Else get the NamedTuple
                 post = Cove::DB.query_one? "select unqid, title, content, link, authorid from posts where unqid = $1", postid, 
                     as: {unqid: String, title: String, content: String, link: String, authorid: String}
-
             rescue ex
                 pp ex
                 store.status = "error"
                 store.message = ex.message.to_s
-                store.data = {"none" => "none"}
 
-                store
+                ctx.response.content_type = "text/html; charset=utf-8"    
+                ctx.response.status_code = 500
+                ctx.response.print Cove::Layout.render(store, Cove::Views.error500)
             else
                 if post != nil
-                    store.status = "success"
-                    store.message = "Post was successfully added"
-                    store.data = {
-                        "unqid" => post[:unqid], 
-                        "title" =>  post[:title], 
-                        "link" =>  post[:link], 
-                        "content" =>  post[:content], 
-                        "authorid" =>  post[:authorid]
-                    }
+                    pp postid
 
-                    store
+                    store.status = "success"
+                    store.message = "Post data was retreived"
+
+                    ctx.response.content_type = "text/html; charset=utf-8"    
+                    ctx.response.print Cove::Layout.render(store, Cove::Views.show_post(post))
                 else
                     store.status = "error"
                     store.message = "The post doesn't exists"
-                    store.data = {"none" => "none"}
-                    
-                    store
+
+                    ctx.response.content_type = "text/html; charset=utf-8"    
+                    ctx.response.status_code = 404
+                    ctx.response.print Cove::Layout.render(store, Cove::Views.error404)
                 end
             end
         end
 
         def self.list(ctx)
             store = Cove::Store.new
-            user = Cove::Auth.check(ctx)
+            store.currentuser = Cove::Auth.check(ctx)
 
             begin
                posts = Cove::DB.query_all "select unqid, title, content, link, authorid from posts",                   

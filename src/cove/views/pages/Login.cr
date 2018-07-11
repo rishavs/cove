@@ -1,6 +1,6 @@
 module Cove
     class Views
-        def self.login(store)
+        def self.login()
             html = <<-HTML
                 <article id="login_page">
                     <h1> Login Page </h1>

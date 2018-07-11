@@ -1,6 +1,6 @@
 module Cove
     class Views
-        def self.about(store)
+        def self.about()
             html = <<-HTML
                 <article id="home_page">
                     <h1>ABOUT ME:</h1>

@@ -30,9 +30,8 @@ module Cove
             route = Route.new(url)
 
             case {route.resource, route.identifier, route.verb, method}
-            # when {"about", "", "", "GET"}
-            #     ctx.response.content_type = "text/html; charset=utf-8"    
-            #     ctx.response.print Cove::Layout.render(Cove::Views.about(store), store)
+            when {"about", "", "", "GET"}
+                Cove::Misc.about(ctx)
             # when {"noanon", "", "", "GET"}
             #     guard("anon", store.currentuser["loggedin"], ctx)
             #     ctx.response.content_type = "text/html; charset=utf-8"    
@@ -65,66 +64,44 @@ module Cove
             #     else
             #         ctx.response.print store
             #     end                
-            # when {"p", route.identifier, "", "GET"}
-            #     ctx.response.content_type = "text/html; charset=utf-8"  
-            #     payload = Cove::Posts.read(ctx, route.identifier)
-            #     store.status =      payload.status
-            #     store.message =     payload.message
-            #     store.data =        payload.data
-            #     if  store.status == "error"
-            #         ctx.response.print Cove::Layout.render(Cove::Views.home(store), store)
-            #     else
-            #         ctx.response.print Cove::Layout.render(Cove::Views.read_post(store), store)
-            #     end
+            when {"p", route.identifier, "", "GET"}
+                Cove::Posts.read(ctx, route.identifier)
+                # ctx.response.content_type = "text/html; charset=utf-8"  
+                # payload = Cove::Posts.read(ctx, route.identifier)
+                # store.status =      payload.status
+                # store.message =     payload.message
+                # store.data =        payload.data
+                # if  store.status == "error"
+                #     ctx.response.print Cove::Layout.render(Cove::Views.home(store), store)
+                # else
+                #     ctx.response.print Cove::Layout.render(Cove::Views.read_post(store), store)
+                # end
             # # when {"post", route.identifier, "edit", "GET"}
             # # when {"post", route.identifier, "", "GET"}
             # # when {"/about/", "", "", "GET"}
                             
-            # # Routes for Register resource
-            # when {"register", "", "", "GET"}
-            #     ctx.response.content_type = "text/html; charset=utf-8"    
-            #     ctx.response.print Cove::Layout.render(Cove::Views.register(store), store)
-            # when {"register", "", "", "POST"}
-            #     ctx.response.content_type = "text/html; charset=utf-8"   
-            #     payload = Cove::Auth.register(ctx)
-            #     store.status =      payload.status
-            #     store.message =     payload.message
-            #     store.data =        payload.data
-            #     if  store.status == "error"
-            #         ctx.response.print Cove::Layout.render(Cove::Views.register(store), store)
-            #     else
-            #         ctx.response.print store
-            #     end
+            # Routes for Register resource
+            when {"register", "", "", "GET"}
+                Cove::Register.show(ctx)
+            when {"register", "", "", "POST"}
+                Cove::Register.adduser(ctx)
 
-            # # Routes for Login resource
-            # when {"login", "", "", "GET"}
-            #     ctx.response.content_type = "text/html; charset=utf-8"    
-            #     ctx.response.print Cove::Layout.render(Cove::Views.login(store), store)
-            # when {"login", "", "", "POST"}
-            #     ctx.response.content_type = "text/html; charset=utf-8"   
-            #     payload =  Cove::Auth.login(ctx)
-            #     store.status =      payload.status
-            #     store.message =     payload.message
-            #     store.data =        payload.data
-            #     if store.status == "error"
-            #         ctx.response.print Cove::Layout.render(Cove::Views.login(store), store)
-            #     else
-            #         usercookie = HTTP::Cookie.new("usertoken", store.data["token"], "/", Time.now + 12.hours)
-            #         ctx.response.headers["Set-Cookie"] = usercookie.to_set_cookie_header
-            #         redirect("/", ctx)
-            #     end
-            # when {"logout","","", "GET"}
-            #     usercookie = HTTP::Cookie.new("usertoken", "none", "/", Time.now + 12.hours)
-            #     ctx.response.headers["Set-Cookie"] = usercookie.to_set_cookie_header
-            #     redirect("/", ctx)
+            # Routes for Login resource
+            when {"login", "", "", "GET"}
+                Cove::Login.show(ctx)
+            when {"login", "", "", "POST"}
+                Cove::Login.login(ctx)
+            when {"logout","","", "GET"}
+                Cove::Login.logout(ctx)
 
+            # Specific 404 route. mainly for redirecting from dynamic routes  
+            # when {"", "", "", "GET"}
+            #     Cove::Errors.error404(ctx)
             # Catch-all routes    
             when {"", "", "", "GET"}
                 Cove::Posts.list(ctx)
             else
-                ctx.response.content_type = "text/html; charset=utf-8"    
-                ctx.response.status_code = 404
-                ctx.response.print Cove::Layout.render(store, "404! Bewarsies! This be wasteland!")
+                Cove::Errors.error404(ctx)
             end
 
         end

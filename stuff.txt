@@ -1,39 +1,21 @@
-
-/
-/p/
-/p/:id
-/p/:id/edit
-/p/new/create
-/u/:id/
-/u/me
-/u/me/edit
-/u/me/settings
-/u/me/create
-/u/me/login
-/u/me/logout
-
-/
-/p/show/:id
-/p/edit/:id/
-/p/new/
-/u/show/:id/
-/me/settings
-/me/register
-/me/login
-/me/logout
+TODOs:
+    - Guards
+    - Global messages which last one 1 ctx cycle
 
 
-CREATE TABLE USERS(
-   UNQID TEXT PRIMARY KEY,
-   USERNAME TEXT NOT NULL UNIQUE,
-   PASSWORD TEXT NOT NULL
-)
+QUERIES:
 
-CREATE TABLE POSTS(
-   UNQID TEXT PRIMARY KEY,
-   TITLE TEXT NOT NULL,
-   LINK TEXT,
-   THUMB TEXT,
-   CONTENT TEXT,
-   AUTHORID TEXT NOT NULL
-)
+    CREATE TABLE USERS(
+        UNQID TEXT PRIMARY KEY,
+        USERNAME TEXT NOT NULL UNIQUE,
+        PASSWORD TEXT NOT NULL
+    )
+
+    CREATE TABLE POSTS(
+        UNQID TEXT PRIMARY KEY,
+        TITLE TEXT NOT NULL,
+        LINK TEXT,
+        THUMB TEXT,
+        CONTENT TEXT,
+        AUTHORID TEXT NOT NULL
+    )

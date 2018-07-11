@@ -33,7 +33,9 @@ module Cove
                         <div class="item">
                             <a href="/secret" >Secret</a>
                         </div>
-                        #{navcontrols}
+                        <div class="right menu">
+                            #{navcontrols}
+                        </div>
                     </div>
                 </div>
             HTML

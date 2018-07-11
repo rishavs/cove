@@ -1,9 +1,9 @@
 module Cove
     class Views
-        def self.read_post(store)
+        def self.show_post(post)
             html = <<-HTML
                 <article id="read_post_page">
-                    <h1>#{store.data["title"]}</h1>
+                    <h1>#{post[:title]}</h1>
                     <div class="ui items">
                         <div class="item">
                             <div class="ui medium image">
@@ -27,7 +27,7 @@ module Cove
                                             </div>
 
                                             <div class="text">
-                                                #{store.data["content"]}
+                                                #{post[:content]}
                                             </div>
                                         </div>
                                     </div>
