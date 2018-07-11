@@ -14,7 +14,7 @@ require "./helpers/*"
 
 module Cove
     Dotenv.load
-    PORT = ENV["PORT"]
+    PORT = ENV["$PORT"]
     DB     = PG.connect ENV["DATABASE_URL"]
 
     pp "Connecting to Database..."
