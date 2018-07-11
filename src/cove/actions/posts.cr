@@ -1,14 +1,23 @@
 module Cove
     class Posts
-        def self.create(ctx, userid)
+        def self.new_post(ctx)
             store = Cove::Store.new
+            store.currentuser = Cove::Auth.check(ctx)
+
+            ctx.response.content_type = "text/html; charset=utf-8"    
+            ctx.response.print Cove::Layout.render( store, Cove::Views.new_post)
+        end
+
+        def self.create(ctx)
+            store = Cove::Store.new
+            store.currentuser = Cove::Auth.check(ctx)
 
             begin
                 params =    Cove::Parse.form_params(ctx.request.body)
                 title =  params.fetch("title")
                 link =  params.fetch("link")
                 content = params.fetch("content")
-                authorid = userid
+                authorid = store.currentuser["unqid"]
 
                 # Trim leading & trailing whitespace
                 title = title.lstrip.rstrip
@@ -30,25 +39,25 @@ module Cove
                 pp ex
                 store.status = "error"
                 store.message = ex.message.to_s
-                store.data = {"none" => "none"}
 
-                store
+                ctx.response.content_type = "text/html; charset=utf-8"    
+                ctx.response.print Cove::Layout.render( store, Cove::Views.new_post)
             else
                 store.status = "success"
                 store.message = "Post was success fully added"
-                store.data = {"postid" => unqid, "posttitle" => title}
-
-                store
+                Cove::Router.redirect("/p/#{unqid}", ctx)
             end
         end
         def self.read(ctx, postid)
             store = Cove::Store.new
-
+            store.currentuser = Cove::Auth.check(ctx)
+            
             begin
                 # Get nil if the post doesnt exists. Else get the NamedTuple
                 post = Cove::DB.query_one? "select unqid, title, content, link, authorid from posts where unqid = $1", postid, 
                     as: {unqid: String, title: String, content: String, link: String, authorid: String}
             rescue ex
+                # Currently we get error with "no rows" if table is empty. But will not handle it as it wouldn't happen in practice.
                 pp ex
                 store.status = "error"
                 store.message = ex.message.to_s

@@ -1,6 +1,6 @@
 module Cove
     class Views
-        def self.new_post(store)
+        def self.new_post()
             html = <<-HTML
                 <article id="new_post_page">
                     <form class="ui form" id="new_post_form" action="/p/new/" method="post">

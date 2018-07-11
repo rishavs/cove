@@ -29,7 +29,11 @@ module Cove
             rescue ex
                 pp ex
                 store.status = "error"
-                store.message = ex.message.to_s
+                if ex.message.to_s == "no rows"
+                    store.message = "The User does not exists"
+                else
+                    store.message = ex.message.to_s
+                end
 
                 ctx.response.content_type = "text/html; charset=utf-8"    
                 ctx.response.print Cove::Layout.render( store, Cove::Views.login)

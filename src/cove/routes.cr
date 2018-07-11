@@ -47,12 +47,11 @@ module Cove
             #         ctx.response.print "Sorry anon. This secret isn't meant for you!"
             #     end
 
-            #     # Routes for Posts resource
-            # when {"p", "new", "", "GET"}
-            #     guard("anon", store.currentuser["loggedin"], ctx)
-            #     ctx.response.content_type = "text/html; charset=utf-8"    
-            #     ctx.response.print Cove::Layout.render(Cove::Views.new_post(store), store)
-            # when {"p", "new", "", "POST"}
+            # Routes for Posts resource
+            when {"p", "new", "", "GET"}
+                Cove::Posts.new_post(ctx)
+            when {"p", "new", "", "POST"}
+                Cove::Posts.create(ctx)
             #     guard("anon", store.currentuser["loggedin"], ctx)
             #     ctx.response.content_type = "text/html; charset=utf-8"   
             #     payload = Cove::Posts.create(ctx, store.currentuser["unqid"])
@@ -66,16 +65,6 @@ module Cove
             #     end                
             when {"p", route.identifier, "", "GET"}
                 Cove::Posts.read(ctx, route.identifier)
-                # ctx.response.content_type = "text/html; charset=utf-8"  
-                # payload = Cove::Posts.read(ctx, route.identifier)
-                # store.status =      payload.status
-                # store.message =     payload.message
-                # store.data =        payload.data
-                # if  store.status == "error"
-                #     ctx.response.print Cove::Layout.render(Cove::Views.home(store), store)
-                # else
-                #     ctx.response.print Cove::Layout.render(Cove::Views.read_post(store), store)
-                # end
             # # when {"post", route.identifier, "edit", "GET"}
             # # when {"post", route.identifier, "", "GET"}
             # # when {"/about/", "", "", "GET"}
