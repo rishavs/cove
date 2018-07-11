@@ -1,1 +1,1 @@
-web: crystal run src/cove.cr --release
+web: crystal build src/cove.cr --release && ./cove
