@@ -33,6 +33,6 @@ module Cove
         # pp context
     end
 
-    puts "Server Started! Listening on localhost:8080"
-    server.listen(8080)
+    puts "Server Started! Listening on localhost:#{ENV["PORT"]}"
+    server.listen(ENV["PORT"].to_i)
 end
