@@ -6,6 +6,7 @@ require "pg"
 require "crypto/bcrypt/password"
 require "uuid"
 require "jwt"
+require "option_parser"
 
 require "./cove/actions/*"
 require "./cove/views/*"
@@ -16,7 +17,13 @@ module Cove
     if !ENV.has_key?("DEV")
         Dotenv.load
     end
-    PORT = ENV["PORT"]
+    port = ENV["PORT"]
+
+    OptionParser.parse! do |opts|
+        opts.on("-p PORT", "--port PORT", "define port to run server") do |opt|
+            port = opt.to_i
+        end
+      end
     DB     = PG.connect ENV["DATABASE_URL"]
 
     pp "Connecting to Database..."
@@ -37,6 +44,6 @@ module Cove
         # pp context
     end
 
-    puts "Server Started! Listening on localhost:#{PORT}"
-    server.listen(PORT.to_i)
+    puts "Server Started! Listening on localhost:#{port}"
+    server.listen(port.to_i)
 end
