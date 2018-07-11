@@ -13,8 +13,10 @@ require "./cove/*"
 require "./helpers/*"
 
 module Cove
-    Dotenv.load!
+    Dotenv.load
+    PORT = ENV["PORT"]
     DB     = PG.connect ENV["DATABASE_URL"]
+
     pp "Connecting to Database..."
     pp DB.scalar "SELECT 'Connection established! The DB sends its regards.'"
 
@@ -33,6 +35,6 @@ module Cove
         # pp context
     end
 
-    puts "Server Started! Listening on localhost:#{ENV["PORT"]}"
-    server.listen(ENV["PORT"].to_i)
+    puts "Server Started! Listening on localhost:#{PORT}"
+    server.listen(PORT.to_i)
 end
