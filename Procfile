@@ -1,1 +1,0 @@
-web: `crystal run src/cove.cr --release && ./cove`
