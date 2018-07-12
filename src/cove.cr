@@ -14,17 +14,20 @@ require "./cove/*"
 require "./helpers/*"
 
 module Cove
+    port = 4321
+
     if !ENV.has_key?("DEV")
         Dotenv.load
-    end
-    port = ENV["PORT"]
-
-    OptionParser.parse! do |opts|
-        opts.on("-p PORT", "--port PORT", "define port to run server") do |opt|
-            port = opt.to_i
+        port = ENV["PORT"].to_i
+    else
+        OptionParser.parse! do |opts|
+            opts.on("-p PORT", "--port PORT", "define port to run server") do |opt|
+                port = opt.to_i
+            end
         end
-      end
-    DB     = PG.connect ENV["DATABASE_URL"]
+    end
+
+    DB = PG.connect ENV["DATABASE_URL"]
 
     pp "Connecting to Database..."
     pp DB.scalar "SELECT 'Connection established! The DB sends its regards.'"
@@ -45,5 +48,5 @@ module Cove
     end
 
     puts "Server Started! Listening on localhost:#{port}"
-    server.listen(port.to_i)
+    server.listen(port)
 end
