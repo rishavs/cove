@@ -1,6 +1,12 @@
 module Cove
     class Views
-        def self.show_post(post)
+        def self.show_post(post, comments)
+            items = ""
+            comments.each do |comment|
+                items = items + 
+                    "<li><a href='/p/#{post["unqid"]}'> #{post["title"]} </a></li>"
+            end
+
             html = <<-HTML
                 <article id="read_post_page">
                     <h1>#{post[:title]}</h1>
@@ -67,7 +73,7 @@ module Cove
                     
                     <h3 class="ui dividing header">Comments</h3>
                     <div class="ui threaded comments" style="max-width: 100%">
-                        {comments_map.map(comment => <Comment comment={comment}/> )}
+                        #{comments}
                     </div>
                 </article>
             HTML

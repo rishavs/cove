@@ -1,6 +1,6 @@
 module Cove
     class Views
-        def self.comment(store)
+        def self.comment(comment)
             html = <<-HTML
                 <div class="comment" comment_id={vnode.attrs.comment.id} >
                     <a class="avatar">

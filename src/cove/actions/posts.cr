@@ -51,11 +51,16 @@ module Cove
         def self.read(ctx, postid)
             store = Cove::Store.new
             store.currentuser = Cove::Auth.check(ctx)
-            
+
             begin
                 # Get nil if the post doesnt exists. Else get the NamedTuple
                 post = Cove::DB.query_one? "select unqid, title, content, link, authorid from posts where unqid = $1", postid, 
                     as: {unqid: String, title: String, content: String, link: String, authorid: String}
+
+                comments = Cove::DB.query_all "select unqid, level, post_id, parent_id,  content, author_id from comments where post_id = $1", postid,                   
+                    as: {unqid: String, level: Int, post_id: String, parent_id: String | Nil , content: String, authorid: String}
+
+                    pp comments
             rescue ex
                 # Currently we get error with "no rows" if table is empty. But will not handle it as it wouldn't happen in practice.
                 pp ex

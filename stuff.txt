@@ -22,7 +22,7 @@ QUERIES:
         LINK TEXT,
         THUMB TEXT,
         CONTENT TEXT,
-        AUTHORID TEXT NOT NULL,
+        AUTHOR_ID TEXT NOT NULL,
         IS_DELETED BOOL DEFAULT FALSE,
         CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UPDATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -32,12 +32,24 @@ QUERIES:
     CREATE TABLE COMMENTS(
         UNQID TEXT PRIMARY KEY,
         LEVEL INT NOT NULL,
-        PARENT TEXT,
-        CHILD TEXT,
+        POST_ID TEXT,
+        PARENT_ID TEXT,
         CONTENT TEXT,
-        AUTHORID TEXT NOT NULL,
+        AUTHOR_ID TEXT NOT NULL,
         IS_DELETED BOOL DEFAULT FALSE,
         CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UPDATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         DELETED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
+
+    insert into comments (unqid, level, post_id, parent_id,  content, author_id) 
+    values ('cid10', 0, 'd178f40f-31c7-4bb9-8a5d-5c9e834c2b4e' , null, 'This is a PARENT level comment', 'JRR Tolkien');
+
+    insert into comments (unqid, level, post_id, parent_id,  content, author_id) 
+    values ('cid11', 1, 'd178f40f-31c7-4bb9-8a5d-5c9e834c2b4e' , 'cid10',  'This is a CHILD level comment', 'Mark Twain');
+
+    insert into comments (unqid, level, post_id, parent_id,  content, author_id) 
+    values ('cid12', 2, 'd178f40f-31c7-4bb9-8a5d-5c9e834c2b4e' , 'cid11', 'This is a GRANDCHILD level comment', 'RL Stephenson');
+
+    insert into comments (unqid, level, post_id, parent_id,  content, author_id) 
+    values ('cid20', 0, 'd178f40f-31c7-4bb9-8a5d-5c9e834c2b4e' , null, 'This is 2nd PARENT level comment', 'Dante');
