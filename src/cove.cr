@@ -15,6 +15,7 @@ require "./helpers/*"
 
 module Cove
     port = 4321
+    host = "0.0.0.0"
 
     if !ENV.has_key?("DEV")
         Dotenv.load
@@ -47,6 +48,7 @@ module Cove
         # pp context
     end
 
-    puts "Server Started! Listening on localhost:#{port}"
-    server.listen(port)
+    # server.bind_tcp host, 8080
+    puts "Server Started! Listening on #{host}:#{port}"
+    server.listen(host, port)
 end
