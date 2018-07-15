@@ -78,7 +78,7 @@ module Cove
                     store.message = "Post data was retreived"
 
                     ctx.response.content_type = "text/html; charset=utf-8"    
-                    ctx.response.print Cove::Layout.render(store, Cove::Views.show_post(post))
+                    ctx.response.print Cove::Layout.render(store, Cove::Views.show_post(post, comments))
                 else
                     store.status = "error"
                     store.message = "The post doesn't exists"

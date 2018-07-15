@@ -62,7 +62,10 @@ module Cove
             #         ctx.response.print Cove::Layout.render(Cove::Views.new_post(store), store)
             #     else
             #         ctx.response.print store
-            #     end                
+            #     end
+            when {"p", route.identifier, "comment", "POST"}
+                Cove::Comment.create(ctx, route.identifier)
+
             when {"p", route.identifier, "", "GET"}
                 Cove::Posts.read(ctx, route.identifier)
             # # when {"post", route.identifier, "edit", "GET"}

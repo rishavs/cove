@@ -1,5 +1,9 @@
 TODOs:
     - Guards
+        SERVERSIDE
+        Client
+            on click of elements
+            on api call
     - Global messages which last one 1 ctx cycle
     - Need to standardize the func names
 

@@ -46,7 +46,7 @@ module Cove
                             <i class="heart outline icon"></i>
                             1024
                         </button>
-                        <button class="ui right labeled icon small basic button" >
+                        <button class="ui right labeled icon small basic button" onclick="toggle_post_reply()">
                             <i class="reply icon"></i>
                             2048
                         </button>
@@ -55,20 +55,19 @@ module Cove
                         </button>
 
                     </div>
-                    <form class="ui reply form" id="reply_for_post" style="display:none" onsubmit={actions.handle_submit}>
+                    <form class="ui reply form" id="post_reply_btn" style="display:none" action="/p/#{post[:unqid]}/comment" method="post">
                         <br />
 
                         <div class="field">
                             <textarea
-                                id="textarea_for_post_reply"
+                                id="post_reply_field"
+                                name="post_reply_field"
                                 class="textarea"
                                 placeholder="Content"
                             >
                             </textarea>
                         </div>
-                        <div class="ui blue labeled submit icon button" onclick={actions.handle_submit}>
-                            <i class="icon edit"></i> Add Reply
-                        </div>
+                        <button class="ui button" type="submit" >Submit</button>
                     </form>
                     
                     <h3 class="ui dividing header">Comments</h3>
@@ -76,6 +75,26 @@ module Cove
                         #{comments}
                     </div>
                 </article>
+
+                <script>
+                const toggle_post_reply = () => {
+                    // ensure user is logged in to use this action
+                    // utils.redirect_to_login_if_not_loggedin()
+            
+                    var component = document.getElementById("post_reply_btn")
+                    if (component.style.display === 'none') {
+                        component.style.display = 'block';
+                        
+                        // this bit is mainly for a smoother transition
+                        document.getElementById("post_reply_btn").scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
+                        document.getElementById("post_reply_btn").focus();
+
+                    } else {
+                        component.style.display = 'none';
+                    }
+
+                }
+                </script>
             HTML
         end
     end
