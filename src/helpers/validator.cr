@@ -23,6 +23,11 @@ module Cove
                 raise Cove::ValidationError.new("The #{itemname} '#{itemval}' doesn't exists.")
             end
         end
+        def self.if_loggedin(userHash)
+            if userHash["loggedin"] != "true" || userHash["unqid"] == "none"
+                raise Cove::ValidationError.new("Unable to fetch user details. Are you sure you are logged in?")
+            end
+        end
     end
 
 

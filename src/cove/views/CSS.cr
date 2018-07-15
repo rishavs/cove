@@ -5,6 +5,7 @@ module Cove
                 <style type="text/css">
                     .main.container {
                         margin-top: 6em;
+                        margin-bottom: 6em;
                     }
                 </style>
             HTML

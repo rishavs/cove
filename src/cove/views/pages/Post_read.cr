@@ -1,15 +1,18 @@
 module Cove
     class Views
-        def self.show_post(post, comments)
-            items = ""
-            comments.each do |comment|
-                items = items + 
-                    "<li><a href='/p/#{post["unqid"]}'> #{post["title"]} </a></li>"
+        def self.show_post(post_data, comments_data)
+            if comments_data == nil || comments_data.size == 0
+                comments_view = "<h4>Doesn't looks like anything to me.</h4>"
+            else
+                comments_view = ""
+                comments_data.each do |cmt_data|
+                    comments_view = comments_view + Cove::Views.comment(cmt_data)
+                end
             end
 
             html = <<-HTML
                 <article id="read_post_page">
-                    <h1>#{post[:title]}</h1>
+                    <h1>#{post_data[:title]}</h1>
                     <div class="ui items">
                         <div class="item">
                             <div class="ui medium image">
@@ -33,7 +36,7 @@ module Cove
                                             </div>
 
                                             <div class="text">
-                                                #{post[:content]}
+                                                #{post_data[:content]}
                                             </div>
                                         </div>
                                     </div>
@@ -55,7 +58,7 @@ module Cove
                         </button>
 
                     </div>
-                    <form class="ui reply form" id="post_reply_btn" style="display:none" action="/p/#{post[:unqid]}/comment" method="post">
+                    <form class="ui reply form" id="post_reply_btn" style="display:none" action="/p/#{post_data[:unqid]}/comment" method="post">
                         <br />
 
                         <div class="field">
@@ -72,7 +75,7 @@ module Cove
                     
                     <h3 class="ui dividing header">Comments</h3>
                     <div class="ui threaded comments" style="max-width: 100%">
-                        #{comments}
+                        #{comments_view}
                     </div>
                 </article>
 

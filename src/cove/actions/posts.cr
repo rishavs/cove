@@ -17,7 +17,11 @@ module Cove
                 title =  params.fetch("title")
                 link =  params.fetch("link")
                 content = params.fetch("content")
-                authorid = store.currentuser["unqid"]
+                if store.currentuser["loggedin"] == "true"
+                    author_id = store.currentuser["unqid"]
+                else
+                    raise Exception.new("Unable to fetch user details. Are you sure you are logged in?")
+                end
 
                 # Trim leading & trailing whitespace
                 title = title.lstrip.rstrip
@@ -33,7 +37,7 @@ module Cove
                 unqid = UUID.random.to_s
                 
                 # DB operations
-                Cove::DB.exec "insert into posts (unqid, title, link, content, authorid) values ($1, $2, $3, $4, $5)", unqid, title, link, content, authorid
+                Cove::DB.exec "insert into posts (unqid, title, link, content, author_id) values ($1, $2, $3, $4, $5)", unqid, title, link, content, author_id
 
             rescue ex
                 pp ex
@@ -54,11 +58,11 @@ module Cove
 
             begin
                 # Get nil if the post doesnt exists. Else get the NamedTuple
-                post = Cove::DB.query_one? "select unqid, title, content, link, authorid from posts where unqid = $1", postid, 
-                    as: {unqid: String, title: String, content: String, link: String, authorid: String}
+                post = Cove::DB.query_one? "select unqid, title, content, link, author_id from posts where unqid = $1", postid, 
+                    as: {unqid: String, title: String, content: String, link: String, author_id: String}
 
                 comments = Cove::DB.query_all "select unqid, level, post_id, parent_id,  content, author_id from comments where post_id = $1", postid,                   
-                    as: {unqid: String, level: Int, post_id: String, parent_id: String | Nil , content: String, authorid: String}
+                    as: {unqid: String, level: Int, post_id: String, parent_id: String , content: String, author_id: String}
 
                     pp comments
             rescue ex
@@ -72,8 +76,6 @@ module Cove
                 ctx.response.print Cove::Layout.render(store, Cove::Views.error500)
             else
                 if post != nil
-                    pp postid
-
                     store.status = "success"
                     store.message = "Post data was retreived"
 
@@ -95,8 +97,8 @@ module Cove
             store.currentuser = Cove::Auth.check(ctx)
 
             begin
-               posts = Cove::DB.query_all "select unqid, title, content, link, authorid from posts",                   
-                    as: {unqid: String, title: String, content: String, link: String, authorid: String}
+               posts = Cove::DB.query_all "select unqid, title, content, link, author_id from posts",                   
+                    as: {unqid: String, title: String, content: String, link: String, author_id: String}
             rescue error
                 pp error
                 store.status = "error"

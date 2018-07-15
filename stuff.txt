@@ -47,13 +47,103 @@ QUERIES:
     );
 
     insert into comments (unqid, level, post_id, parent_id,  content, author_id) 
-    values ('cid10', 0, 'd178f40f-31c7-4bb9-8a5d-5c9e834c2b4e' , null, 'This is a PARENT level comment', 'JRR Tolkien');
+    values ('cid10', 0, 'c47b5af1-a43b-4488-86cd-a42645b66c10' , "none", 'This is a PARENT level comment', 'JRR Tolkien');
 
     insert into comments (unqid, level, post_id, parent_id,  content, author_id) 
-    values ('cid11', 1, 'd178f40f-31c7-4bb9-8a5d-5c9e834c2b4e' , 'cid10',  'This is a CHILD level comment', 'Mark Twain');
+    values ('cid11', 1, 'c47b5af1-a43b-4488-86cd-a42645b66c10' , 'cid10',  'This is a CHILD level comment', 'Mark Twain');
 
     insert into comments (unqid, level, post_id, parent_id,  content, author_id) 
-    values ('cid12', 2, 'd178f40f-31c7-4bb9-8a5d-5c9e834c2b4e' , 'cid11', 'This is a GRANDCHILD level comment', 'RL Stephenson');
+    values ('cid12', 2, 'c47b5af1-a43b-4488-86cd-a42645b66c10' , 'cid11', 'This is a GRANDCHILD level comment', 'RL Stephenson');
 
     insert into comments (unqid, level, post_id, parent_id,  content, author_id) 
-    values ('cid20', 0, 'd178f40f-31c7-4bb9-8a5d-5c9e834c2b4e' , null, 'This is 2nd PARENT level comment', 'Dante');
+    values ('cid20', 0, 'c47b5af1-a43b-4488-86cd-a42645b66c10' , "none", 'This is 2nd PARENT level comment', 'Dante');
+
+
+    class Item
+  property unqid : String
+  property parent_id : String
+  property level : Int32
+  property post_id : String
+  property content : String
+  property author_id : String
+
+  def initialize(@unqid, @parent_id, @level, @post_id, @content, @author_id)
+  end
+end
+
+class TreeItem
+  property unqid : String
+  property parent_id : String
+  property level : Int32
+  property post_id : String
+  property content : String
+  property author_id : String
+  property children = [] of TreeItem
+
+  def self.from_item(it : Item)
+    new(it.unqid, it.parent_id, it.level, it.post_id, it.content, it.author_id)
+  end
+
+  def initialize(@unqid, @parent_id, @level, @post_id, @content, @author_id)
+  end
+end
+
+def list_to_tree(input : Array(Item)) : Array(TreeItem)
+  tree = [] of TreeItem
+  items_by_id = {} of String => TreeItem
+
+  input.each do |item|
+    items_by_id[item.unqid] = TreeItem.from_item item
+  end
+
+  input.each do |item|
+    node = items_by_id[item.unqid]
+
+    if node.parent_id == "none"
+      tree << node
+    else
+      parent_node = items_by_id[item.parent_id]
+      parent_node.children << node
+    end
+  end
+
+  tree
+end
+
+# Build input:
+input = [] of Item
+input << Item.new(
+  unqid: "cid10",
+  level: 0,
+  post_id: "c47b5af1-a43b-4488-86cd-a42645b66c10",
+  parent_id: "none",
+  content: "This is a PARENT level comment",
+  author_id: "JRR Tolkien",
+)
+input << Item.new(
+  unqid: "cid11",
+  level: 1,
+  post_id: "c47b5af1-a43b-4488-86cd-a42645b66c10",
+  parent_id: "cid10",
+  content: "This is a CHILD level comment",
+  author_id: "Mark Twain"
+)
+input << Item.new(
+  unqid: "cid12",
+  level: 2,
+  post_id: "c47b5af1-a43b-4488-86cd-a42645b66c10",
+  parent_id: "cid11",
+  content: "This is a GRANDCHILD level comment",
+  author_id: "RL Stephenson"
+)
+input << Item.new(
+  unqid: "cid20",
+  level: 0,
+  post_id: "c47b5af1-a43b-4488-86cd-a42645b66c10",
+  parent_id: "none",
+  content: "This is 2nd PARENT level comment",
+  author_id: "Dante"
+)
+
+# Make a tree:
+pp list_to_tree(input)
