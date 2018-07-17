@@ -1,13 +1,10 @@
 module Cove
     class Views
         def self.show_post(post_data, comments_data)
-            if comments_data == nil || comments_data.size == 0
+            if comments_data.size == 0
                 comments_view = "<h4>Doesn't looks like anything to me.</h4>"
             else
-                comments_view = ""
-                comments_data.each do |cmt_data|
-                    comments_view = comments_view + Cove::Views.comment(cmt_data)
-                end
+                Cove::Views.comment_tree(comments_data)
             end
 
             html = <<-HTML
@@ -74,9 +71,7 @@ module Cove
                     </form>
                     
                     <h3 class="ui dividing header">Comments</h3>
-                    <div class="ui threaded comments" style="max-width: 100%">
-                        #{comments_view}
-                    </div>
+                    #{comments_view}
                 </article>
 
                 <script>

@@ -1,8 +1,19 @@
 module Cove
     class Views
-        def self.comment(cmt_data)
-            if cmt_data != nil
-                html = <<-HTML
+        def self.comment_tree(comments_data)
+                comments_view = ""
+                comments_data.each do |cmt_data|
+                    if cmt_data[:parent_id] == "none" && cmt_data[:level] == 0
+                        children = ""
+                        cmt_data[:children_ids].each do |child|
+                            children =  children + Cove::Views.comment_tree(comments_data[child])
+                        end
+
+                        comments_view = comments_view + Cove::Views.comment_tree(cmt_data)
+                    end
+
+                
+                comments= <<-HTML
                     <div class="comment" comment_id="#{cmt_data[:unqid]}" >
                         <a class="avatar">
                             <img src="http://via.placeholder.com/50x50.png" />
@@ -39,14 +50,18 @@ module Cove
                                 <br />
 
                             </form>
+                            #{children}
                             <!-- {vnode.attrs.comment.children.map(com_child => <Comment comment={com_child} />)} -->
                         </div>
                     </div>
                 HTML
-            else
-                ""
-            end
 
+                html = <<-HTML
+                    <div class="ui threaded comments" style="max-width: 100%">
+                        #{comments}
+                    </div>
+                HTML
+            end
         end
     end
 end

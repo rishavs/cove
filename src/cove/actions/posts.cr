@@ -61,10 +61,46 @@ module Cove
                 post = Cove::DB.query_one? "select unqid, title, content, link, author_id from posts where unqid = $1", postid, 
                     as: {unqid: String, title: String, content: String, link: String, author_id: String}
 
-                comments = Cove::DB.query_all "select unqid, level, post_id, parent_id,  content, author_id from comments where post_id = $1", postid,                   
-                    as: {unqid: String, level: Int, post_id: String, parent_id: String , content: String, author_id: String}
+                comments = Cove::DB.query_all "select unqid, level, post_id, parent_id, children_ids, content, author_id from comments where post_id = $1", postid,                   
+                    as: {unqid: String, level: Int, post_id: String, parent_id: String , children_ids: Array(String), content: String, author_id: String}
+                
+                # nue_com = Hash(String, Hash(String, String | Int32 | Array(String)))
+                tree = [] of Cove::Models::CommentTree
+                com_by_id = {} of String => Cove::Models::CommentTree
+                childrenOf = {} of String => Cove::Models::CommentTree
+              
+                DB.query_each "select unqid, level, post_id, parent_id, content, author_id from comments where post_id = $1", postid do |com|       
+                    cm = Cove::Models::CommentTree.new(com.read.as(String), com.read.as(Int32), com.read.as(String), com.read.as(String), com.read.as(String), com.read.as(String) )
+                    pp cm
+                    
+                    # node = childrenOf[cm.unqid]
+                    # cm.children = childrenOf.has_key?(cm.unqid) ? childrenOf[cm.unqid] : []
+                    if cm.parent_id == "none"
+                        tree << cm
+                    else
+                        # parent_node = childrenOf[cm.parent_id]
+                        # parent_node.children << node
+                        childrenOf[cm.parent_id] = cm
+                    end
 
-                    pp comments
+                    # id = item.id;
+                    # parentId = item.data().parent_id || 0;
+                    # // every item may have children
+                    # childrenOf[id] = childrenOf[id] || [];
+                    # // init its children
+                    # item.children = childrenOf[id];
+                    # if (parentId != 0) {
+                    #     // init its parent's children object
+                    #     childrenOf[parentId] = childrenOf[parentId] || [];
+                    #     // push it into its parent's children object
+                    #     childrenOf[parentId].push(item);
+                    # } else {
+                    #     tree.push(item);
+                    # }
+                end
+
+                pp tree
+
             rescue ex
                 # Currently we get error with "no rows" if table is empty. But will not handle it as it wouldn't happen in practice.
                 pp ex
@@ -80,7 +116,7 @@ module Cove
                     store.message = "Post data was retreived"
 
                     ctx.response.content_type = "text/html; charset=utf-8"    
-                    ctx.response.print Cove::Layout.render(store, Cove::Views.show_post(post, comments))
+                    # ctx.response.print Cove::Layout.render(store, Cove::Views.show_post(post, comments))
                 else
                     store.status = "error"
                     store.message = "The post doesn't exists"
