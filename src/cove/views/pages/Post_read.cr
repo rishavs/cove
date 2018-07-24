@@ -1,10 +1,22 @@
 module Cove
     class Views
-        def self.show_post(post_data, comments_data)
-            if comments_data.size == 0
+        def self.post_read(post_data, ctree)
+            if ctree.size == 0
                 comments_view = "<h4>Doesn't looks like anything to me.</h4>"
             else
-                Cove::Views.comment_tree(comments_data)
+                comments_view = ""
+                ctree.each do |id, cmt|
+                    if cmt.parent_id == "none" && cmt.level == 0
+                        comments_view = comments_view + Cove::Views.comments(cmt, ctree)
+                    end
+                end
+
+                comments_view = <<-HTML
+                    <div class="ui threaded comments" style="max-width: 100%">
+                        #{comments_view}
+                    </div>
+                HTML
+            
             end
 
             html = <<-HTML

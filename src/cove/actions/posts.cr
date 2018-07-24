@@ -72,8 +72,7 @@ module Cove
                 comments = Cove::DB.query_all "select unqid, level, post_id, parent_id, children_ids, content, author_id from comments where post_id = $1", postid,                   
                     as: {unqid: String, level: Int, post_id: String, parent_id: String , children_ids: Array(String), content: String, author_id: String}
                     
-                # tree = {} of String => Array(String)
-                tree = {} of String => Cove::Models::CommentTree
+                ctree = {} of String => Cove::Models::CommentTree
                 comments.each do |comment|
                     node = Cove::Models::CommentTree.new(
                         comment[:unqid],
@@ -85,89 +84,8 @@ module Cove
                     )
                     node.children_ids = comment[:children_ids]
 
-                    tree[node.unqid] = node
-
-                    if node.level == 0
-                        pp Posts.view(3, node.unqid), node.children_ids
-                    end
+                    ctree[node.unqid] = node
                 end
-                    
-
-                pp Posts.view(3, "xxx")
-                pp Posts.view(5, "aaaaa")
-
-                pp "---------TREE------------"
-                pp tree
-
-                # parentry = {} of String => Cove::Models::CommentTree
-                # listree = [] of Cove::Models::CommentTree
-                # comments.each do |comment|
-                #     # parentry[comment[:unqid]] = 
-                #     # if node.parent_id == 'none'
-                #     #     tree << node
-                #     # else
-                #     #     parent_node = items_by_id[item.parent_id]
-                #     #     parent_node.children << node
-                #     # end
-                #     node = Cove::Models::CommentTree.new(
-                #         comment[:unqid],
-                #         comment[:level].to_i,
-                #         comment[:post_id],
-                #         comment[:parent_id],
-                #         comment[:content],
-                #         comment[:author_id],
-                #     )
-                #     # if node exists pick its children
-
-                #     if parentry.has_key?(comment[:unqid])
-                #         parentry[comment[:unqid]].level = node.level
-                #         parentry[comment[:unqid]].post_id = node.post_id
-                #         parentry[comment[:unqid]].parent_id = node.parent_id
-                #         parentry[comment[:unqid]].content = node.content
-                #         parentry[comment[:unqid]].author_id = node.author_id
-                #         node.children_arr = parentry[comment[:unqid]].children_arr
-                #     end
-
-                #     if parentry.has_key?(comment[:parent_id])
-                #         # pick children from existing entry
-                #         # add to own parent
-                #         # if level = 0 then add to root
-                #         if node.parent_id != "none"
-                #             listree << node
-                #         else
-                #             parentry[comment[:parent_id]].children_arr << node
-                #         end
-                        
-                #     else
-                #         parenode = Cove::Models::CommentTree.new(
-                #             comment[:parent_id],
-                #             1,
-                #             "none",
-                #             "none",
-                #             "none",
-                #             "none"
-                #         )
-                #         parenode.children_arr << node
-                #         parentry[comment[:parent_id]] = parenode
-                #     end
-                # end
-                    
-                # pp "---------PARENTREE------------"
-                # pp parentry
-                    
-                # pp "---------LISTREE------------"
-                # pp listree
-
-                # childrentry = {} of String => Cove::Models::CommentTree
-                # comments.each do |comment|
-                #     id = comment[:unqid]
-                #     children = comment[:children_ids]
-                #     tree[id] = children
-                # end
-                    
-                # pp "---------CHILDRENTREE------------"
-                # pp childrentry
-
             rescue ex
                 # Currently we get error with "no rows" if table is empty. But will not handle it as it wouldn't happen in practice.
                 pp ex
@@ -183,7 +101,7 @@ module Cove
                     store.message = "Post data was retreived"
 
                     ctx.response.content_type = "text/html; charset=utf-8"    
-                    # ctx.response.print Cove::Layout.render(store, Cove::Views.show_post(post, comments))
+                    ctx.response.print Cove::Layout.render(store, Cove::Views.post_read(post, ctree))
                 else
                     store.status = "error"
                     store.message = "The post doesn't exists"
