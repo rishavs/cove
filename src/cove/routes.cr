@@ -32,37 +32,14 @@ module Cove
             case {route.resource, route.identifier, route.verb, method}
             when {"about", "", "", "GET"}
                 Cove::Misc.about(ctx)
-            # when {"noanon", "", "", "GET"}
-            #     guard("anon", store.currentuser["loggedin"], ctx)
-            #     ctx.response.content_type = "text/html; charset=utf-8"    
-            #     ctx.response.print "Yo"
-            # when {"nologgy", "", "", "GET"}
-            #     guard("user", store.currentuser["loggedin"], ctx)
-            #     ctx.response.content_type = "text/html; charset=utf-8"    
-            #     ctx.response.print "Yo"
-            # when {"secret", "", "", "GET"}
-            #     if store.currentuser["loggedin"] == "true"
-            #         ctx.response.print "Yo #{ store.currentuser["username"] }! This secret is yours!"
-            #     else
-            #         ctx.response.print "Sorry anon. This secret isn't meant for you!"
-            #     end
 
-            # Routes for Posts resource
+                # Routes for Posts resource
             when {"p", "new", "", "GET"}
                 Cove::Posts.new_post(ctx)
             when {"p", "new", "", "POST"}
                 Cove::Posts.create(ctx)
             #     guard("anon", store.currentuser["loggedin"], ctx)
-            #     ctx.response.content_type = "text/html; charset=utf-8"   
-            #     payload = Cove::Posts.create(ctx, store.currentuser["unqid"])
-            #     store.status =      payload.status
-            #     store.message =     payload.message
-            #     store.data =        payload.data
-            #     if  store.status == "error"
-            #         ctx.response.print Cove::Layout.render(Cove::Views.new_post(store), store)
-            #     else
-            #         ctx.response.print store
-            #     end
+ 
             when {"p", route.identifier, "comment", "POST"}
                 Cove::Comment.create(ctx, route.identifier)
 

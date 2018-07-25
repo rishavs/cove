@@ -30,7 +30,7 @@ module Cove
                         <div class="text">
                             #{cmt.content}
                         </div>
-                        <div class="actions toggle_vis" style="visibility:hidden;">
+                        <div class="actions" style="visibility:visible;">
                             <a class="reply">Like (250) <i class="heart outline icon"></i></a>
                             <a class="reply" onclick= "toggle_comment_reply('#{cmt.unqid}')"> Reply (2110) <i class="reply icon"></i></a>
                             <a class="bookmark" > Bookmark <i class="bookmark outline icon"></i></a>
@@ -38,6 +38,7 @@ module Cove
                             <a class="delete"> Delete <i class="trash icon"></i></a>
                         </div>
                         <form class="ui reply form" id="reply_for_id:#{cmt.unqid}" style="display:none" onsubmit={()} >
+                            <input name="parent_id" value="{cmt.unqid}"></input>
                             <div class="field">
                                 <textarea
                                     id="textarea_for_id:#{cmt.unqid}"
