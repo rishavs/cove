@@ -85,26 +85,6 @@ module Cove
                     <h3 class="ui dividing header">Comments</h3>
                     #{comments_view}
                 </article>
-
-                <script>
-                const toggle_post_reply = () => {
-                    // ensure user is logged in to use this action
-                    // utils.redirect_to_login_if_not_loggedin()
-            
-                    var component = document.getElementById("post_reply_btn")
-                    if (component.style.display === 'none') {
-                        component.style.display = 'block';
-                        
-                        // this bit is mainly for a smoother transition
-                        document.getElementById("post_reply_btn").scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
-                        document.getElementById("post_reply_btn").focus();
-
-                    } else {
-                        component.style.display = 'none';
-                    }
-
-                }
-                </script>
             HTML
         end
     end

@@ -4,7 +4,7 @@ module Cove
             
             children = ""
             cmt.children_ids.each do |chid|
-                children = children + Cove::Views.comments(ctree[chid], ctree)
+                children = "#{children} #{Cove::Views.comments(ctree[chid], ctree)}"
             end
 
             if cmt.children_ids.size > 0
@@ -30,9 +30,9 @@ module Cove
                         <div class="text">
                             #{cmt.content}
                         </div>
-                        <div class="actions">
+                        <div class="actions toggle_vis" style="visibility:hidden;">
                             <a class="reply">Like (250) <i class="heart outline icon"></i></a>
-                            <a class="reply" onclick={}> Reply (2110) <i class="reply icon"></i></a>
+                            <a class="reply" onclick= "toggle_comment_reply('#{cmt.unqid}')"> Reply (2110) <i class="reply icon"></i></a>
                             <a class="bookmark" > Bookmark <i class="bookmark outline icon"></i></a>
                             <a class="edit"> Edit <i class="edit icon"></i></a>
                             <a class="delete"> Delete <i class="trash icon"></i></a>
@@ -40,7 +40,7 @@ module Cove
                         <form class="ui reply form" id="reply_for_id:#{cmt.unqid}" style="display:none" onsubmit={()} >
                             <div class="field">
                                 <textarea
-                                    id={"textarea_for_id:" + vnode.attrs.comment.id}
+                                    id="textarea_for_id:#{cmt.unqid}"
                                     class="textarea"
                                     placeholder="Content"
                                 >
