@@ -40,8 +40,8 @@ module Cove
                 Cove::Posts.create(ctx)
             #     guard("anon", store.currentuser["loggedin"], ctx)
  
-            when {"p", route.identifier, "comment", "POST"}
-                Cove::Comment.create(ctx, route.identifier)
+            when {"c", "new", "", "POST"}
+                Cove::Comment.create(ctx)
 
             when {"p", route.identifier, "", "GET"}
                 Cove::Posts.read(ctx, route.identifier)

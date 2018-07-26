@@ -2,12 +2,12 @@ module Cove
     class Views
         def self.comments(cmt, ctree)
             
-            children = ""
-            cmt.children_ids.each do |chid|
-                children = "#{children} #{Cove::Views.comments(ctree[chid], ctree)}"
-            end
-
             if cmt.children_ids.size > 0
+                children = ""
+                cmt.children_ids.each do |chid|
+                    children = "#{children} #{Cove::Views.comments(ctree[chid], ctree)}"
+                end
+
                 children_view = <<-HTML 
                     <div class="comments">
                         #{children}
@@ -37,12 +37,15 @@ module Cove
                             <a class="edit"> Edit <i class="edit icon"></i></a>
                             <a class="delete"> Delete <i class="trash icon"></i></a>
                         </div>
-                        <form class="ui reply form" id="reply_for_id:#{cmt.unqid}" style="display:none" onsubmit={()} >
+                        <form class="ui reply form" id="reply_for_id:#{cmt.unqid}" style="display:none" action="/c/new/" method="post">
                             <input name="parent_id" value="#{cmt.unqid}" style="display:none"></input>
+                            <input name="post_id" value="#{cmt.post_id}" style="display:none"></input>
+                            <input name="level" value="#{cmt.level + 1}" style="display:none"></input>
                             <div class="field">
                                 <textarea
                                     id="textarea_for_id:#{cmt.unqid}"
                                     class="textarea"
+                                    name="content"
                                     placeholder="Content"
                                 >
                                 </textarea>

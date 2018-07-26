@@ -67,19 +67,24 @@ module Cove
                         </button>
 
                     </div>
-                    <form class="ui reply form" id="post_reply_btn" style="display:none" action="/p/#{post_data[:unqid]}/comment" method="post">
-                        <br />
-
+                    <form class="ui reply form" id="reply_for_id:#{post_data[:unqid]}" style="display:none" action="/c/new/" method="post">
+                        <input name="parent_id" value="none" style="display:none"></input>
+                        <input name="post_id" value="#{post_data[:unqid]}" style="display:none"></input>
+                        <input name="level" value="0" style="display:none"></input>
                         <div class="field">
                             <textarea
-                                id="post_reply_field"
-                                name="post_reply_field"
+                                id="textarea_for_id:#{post_data[:unqid]}"
                                 class="textarea"
+                                name="content"
                                 placeholder="Content"
                             >
                             </textarea>
                         </div>
-                        <button class="ui button" type="submit" >Submit</button>
+                        <button class="ui primary submit labeled icon button" >
+                            <i class="icon edit"></i> Add Reply
+                        </button>
+                        <br />
+                        <br />
                     </form>
                     
                     <h3 class="ui dividing header">Comments</h3>

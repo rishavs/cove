@@ -1,18 +1,18 @@
 module Cove
     class Comment
 
-        def self.create(ctx, post_id)
+        def self.create(ctx)
             store = Cove::Store.new
             store.currentuser = Cove::Auth.check(ctx)
-            pp
 
             begin
                 params =    Cove::Parse.form_params(ctx.request.body)
                 Cove::Validate.if_loggedin(store.currentuser)
                 
-                parent_id =  "none"
-                level = 0
-                content = params.fetch("post_reply_field")
+                post_id =  params.fetch("post_id")
+                parent_id =  params.fetch("parent_id")
+                level = params.fetch("level").to_i
+                content = params.fetch("content")
                 author_id = store.currentuser["unqid"]
                 
                 # Trim leading & trailing whitespace
@@ -25,8 +25,11 @@ module Cove
                 unqid = UUID.random.to_s
                 
                 # DB operations
-                Cove::DB.exec "insert into comments (unqid, level, parent_id, post_id, content, author_id) values ($1, $2, $3, $4, $5, $6)", 
+                Cove::DB.exec "insert into comments (unqid, level, parent_id, post_id, content, author_id) values ($1, $2, $3, $4, $5, $6);", 
                     unqid, level, parent_id, post_id, content, author_id
+                if parent_id == "none" && level > 0
+                    Cove::DB.exec "UPDATE comments SET children_ids = children_ids || '{$1}' WHERE unqid = $2;", unqid, parent_id
+                end
 
             rescue ex
                 pp ex
