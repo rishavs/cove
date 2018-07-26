@@ -31,7 +31,7 @@ module Cove
                         if (component.style.display === 'none') {
                             component.style.display = 'block';
             
-                            // this bit is mainly for a smoother transition
+                            // this bit is mainly for a smoother transition. Broken in chrome
                             document.getElementById("textarea_for_id:" + id).scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
                             document.getElementById("textarea_for_id:" + id).focus();
                         } else {

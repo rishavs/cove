@@ -38,7 +38,7 @@ module Cove
                             <a class="delete"> Delete <i class="trash icon"></i></a>
                         </div>
                         <form class="ui reply form" id="reply_for_id:#{cmt.unqid}" style="display:none" onsubmit={()} >
-                            <input name="parent_id" value="{cmt.unqid}"></input>
+                            <input name="parent_id" value="#{cmt.unqid}" style="display:none"></input>
                             <div class="field">
                                 <textarea
                                     id="textarea_for_id:#{cmt.unqid}"
