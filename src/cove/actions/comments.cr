@@ -27,8 +27,8 @@ module Cove
                 # DB operations
                 Cove::DB.exec "insert into comments (unqid, level, parent_id, post_id, content, author_id) values ($1, $2, $3, $4, $5, $6);", 
                     unqid, level, parent_id, post_id, content, author_id
-                if parent_id == "none" && level > 0
-                    Cove::DB.exec "UPDATE comments SET children_ids = children_ids || '{$1}' WHERE unqid = $2;", unqid, parent_id
+                if parent_id != "none" && level > 0
+                    Cove::DB.exec "UPDATE comments SET children_ids = children_ids || '{#{unqid}}' WHERE unqid = $1;", parent_id
                 end
 
             rescue ex
