@@ -37,7 +37,7 @@ module Cove
                             <a class="edit"> Edit <i class="edit icon"></i></a>
                             <a class="delete"> Delete <i class="trash icon"></i></a>
                         </div>
-                        <form class="ui reply form" id="reply_for_id:#{cmt.unqid}" style="display:none" action="/c/new/" method="post">
+                        <form class="ui reply form" id="comment_for_id:#{cmt.unqid}" style="display:none" action="/c/new/" method="post">
                             <input name="parent_id" value="#{cmt.unqid}" style="display:none"></input>
                             <input name="post_id" value="#{cmt.post_id}" style="display:none"></input>
                             <input name="level" value="#{cmt.level + 1}" style="display:none"></input>

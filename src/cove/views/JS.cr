@@ -9,13 +9,13 @@ module Cove
                         // ensure user is logged in to use this action
                         // utils.redirect_to_login_if_not_loggedin()
                 
-                        var component = document.getElementById("post_reply_btn")
+                        var component = document.getElementById("reply_form")
                         if (component.style.display === 'none') {
                             component.style.display = 'block';
                             
                             // this bit is mainly for a smoother transition
-                            document.getElementById("post_reply_field").scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
-                            document.getElementById("post_reply_field").focus();
+                            document.getElementById("textarea_reply_form").scrollIntoView({ behavior: "smooth", block: "center", inline: "center" })
+                            document.getElementById("textarea_reply_form").focus();
     
                         } else {
                             component.style.display = 'none';
@@ -27,7 +27,7 @@ module Cove
                         // ensure user is logged in to use this action
                         // utils.redirect_to_login_if_not_loggedin()
             
-                        var component = document.getElementById("reply_for_id:" + id)
+                        var component = document.getElementById("comment_for_id:" + id)
                         if (component.style.display === 'none') {
                             component.style.display = 'block';
             

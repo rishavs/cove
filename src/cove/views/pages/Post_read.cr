@@ -67,13 +67,15 @@ module Cove
                         </button>
 
                     </div>
-                    <form class="ui reply form" id="reply_for_id:#{post_data[:unqid]}" style="display:none" action="/c/new/" method="post">
+                    
+                    <form class="ui reply form" id="reply_form" style="display:none" action="/c/new/" method="post">
+                        <br />
                         <input name="parent_id" value="none" style="display:none"></input>
                         <input name="post_id" value="#{post_data[:unqid]}" style="display:none"></input>
                         <input name="level" value="0" style="display:none"></input>
                         <div class="field">
                             <textarea
-                                id="textarea_for_id:#{post_data[:unqid]}"
+                                id="textarea_reply_form"
                                 class="textarea"
                                 name="content"
                                 placeholder="Content"

@@ -40,7 +40,7 @@ QUERIES:
         LEVEL INT NOT NULL,
         POST_ID TEXT,
         PARENT_ID TEXT,
-        children_ids TEXT DEFAULT '{}',
+        children_ids TEXT [] DEFAULT '{}',
         CONTENT TEXT,
         AUTHOR_ID TEXT NOT NULL,
         IS_DELETED BOOL DEFAULT FALSE,
