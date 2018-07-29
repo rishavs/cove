@@ -14,17 +14,19 @@ module Cove
 
             begin
                 params =    Cove::Parse.form_params(ctx.request.body)
-                username =  params.fetch("username")
+                email =  params.fetch("email")
                 password =  params.fetch("password")
                 
                 # Trim leading & trailing whitespace
-                username = username.downcase.lstrip.rstrip
+                email = email.downcase.lstrip.rstrip
 
                 # Validation checks
-                Cove::Validate.if_length(username, "username", 3, 32)
+                Cove::Validate.if_length(email, "email", 3, 32)
                 Cove::Validate.if_length(password, "password", 3, 32)
 
-                user = DB.query_one "select unqid, username, password from users where username = $1", username, as: {unqid: String, username: String, password: String}
+                # instead of pulling pass from db, can we we send the login pass to db and have that do the comparison?
+                user = DB.query_one "select unqid, nickname, flair, email, password from users where email = $1", email, 
+                    as: {unqid: String, nickname: String, flair: String, email: String, password: String}
             
             rescue ex
                 pp ex
@@ -42,9 +44,9 @@ module Cove
                     puts "The password matches"
 
                     exp = Time.now.epoch + 6000000
-                    payload = { "unqid" => user["unqid"], "username" => user["username"], "exp" => exp }
+                    payload = { "unqid" => user["unqid"], "email" => user["email"], "nickname" => user["nickname"], "flair" => user["flair"], "exp" => exp }
                     token = JWT.encode(payload, ENV["SECRET_JWT"], "HS256")
-                    # token = create_jwt(user["unqid"], user["username"])
+
                     usercookie = HTTP::Cookie.new("usertoken", token, "/", Time.now + 12.hours)
                     ctx.response.headers["Set-Cookie"] = usercookie.to_set_cookie_header
     

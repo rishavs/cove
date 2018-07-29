@@ -5,7 +5,7 @@ module Cove
     class Store 
         property status :       String = "none"
         property message :      String = "none"
-        property currentuser :  Hash(String, String) = {"loggedin" => "none", "unqid" => "none", "username" => "none" }
+        property currentuser :  Hash(String, String) = {"loggedin" => "none", "unqid" => "none", "nickname" => "none" }
     end
     class Route 
         property resource :     String = ""

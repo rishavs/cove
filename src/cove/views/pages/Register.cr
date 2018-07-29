@@ -6,8 +6,16 @@ module Cove
                     <h1>Register </h1>
                     <form class="ui form" id="register_form" action="/register" method="post" onsubmit="reset_password_input()">
                         <div class="field">
-                            <label>Username</label>
-                            <input type="text" name="username" id="username" placeholder="Username" />
+                            <label>Nick Name</label>
+                            <input type="text" name="nickname" placeholder="Nick Name" />
+                        </div>
+                        <div class="field">
+                            <label>Flair</label>
+                            <input type="text" name="flair" placeholder="Flair" />
+                        </div>
+                        <div class="field">
+                            <label>Email</label>
+                            <input type="text" name="email" id="email" placeholder="Email" />
                         </div>
                         <div class="field">
                             <label>Password</label>

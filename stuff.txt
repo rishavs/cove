@@ -14,8 +14,10 @@ QUERIES:
 
     CREATE TABLE USERS(
         UNQID TEXT PRIMARY KEY,
-        USERNAME TEXT NOT NULL UNIQUE,
+        EMAIL TEXT NOT NULL UNIQUE,
         PASSWORD TEXT NOT NULL,
+        NICKNAME TEXT NOT NULL,
+        FLAIR TEXT,
         IS_DELETED BOOL DEFAULT FALSE,
         CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UPDATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -29,6 +31,7 @@ QUERIES:
         THUMB TEXT,
         CONTENT TEXT,
         AUTHOR_ID TEXT NOT NULL,
+        AUTHOR_NICK TEXT,
         IS_DELETED BOOL DEFAULT FALSE,
         CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UPDATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -43,37 +46,14 @@ QUERIES:
         children_ids TEXT [] DEFAULT '{}',
         CONTENT TEXT,
         AUTHOR_ID TEXT NOT NULL,
+        AUTHOR_NICK TEXT,
         IS_DELETED BOOL DEFAULT FALSE,
         CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         UPDATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         DELETED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
 
-    insert into comments (unqid, level, post_id, parent_id,  content, author_id) 
-    values ('cid10', 0, 'c47b5af1-a43b-4488-86cd-a42645b66c10' , 'none', 'This is a PARENT level comment', 'JRR Tolkien');
-
-    insert into comments (unqid, level, post_id, parent_id,  content, author_id) 
-    values ('cid11', 1, 'c47b5af1-a43b-4488-86cd-a42645b66c10' , 'cid10',  'This is a CHILD level comment', 'Mark Twain');
-
-    insert into comments (unqid, level, post_id, parent_id,  content, author_id) 
-    values ('cid12', 2, 'c47b5af1-a43b-4488-86cd-a42645b66c10' , 'cid11', 'This is a GRANDCHILD level comment', 'RL Stephenson');
-
-    insert into comments (unqid, level, post_id, parent_id,  content, author_id) 
-    values ('cid20', 0, 'c47b5af1-a43b-4488-86cd-a42645b66c10' , 'none', 'This is 2nd PARENT level comment', 'Dante');
-
-    CREATE TABLE BETTERCOMMENTS(
-        UNQID TEXT PRIMARY KEY,
-        LEVEL INT NOT NULL,
-        POST_ID TEXT,
-        PARENT_ID TEXT,
-        children_ids TEXT [],
-        CONTENT TEXT,
-        AUTHOR_ID TEXT NOT NULL,
-        IS_DELETED BOOL DEFAULT FALSE,
-        CREATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        UPDATED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        DELETED_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    );
+    UPDATE users SET children_ids = children_ids || '{unqid}' WHERE unqid = parent_id;
 
     insert into comments (unqid, level, post_id, parent_id,  children_ids, content, author_id) 
     values ('cid100', 0, 'c47b5af1-a43b-4488-86cd-a42645b66c10' , 'none', '{"cid110", "cid120" }', 'This is a PARENT level comment', 'JRR Tolkien');

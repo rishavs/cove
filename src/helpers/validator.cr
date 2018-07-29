@@ -4,7 +4,7 @@ module Cove
 
     class Validate
         def self.if_unique(itemval, itemname, dbtable)
-            unq_count = (Cove::DB.scalar "select count(*) from #{dbtable} where username = $1", itemval).as(Int)
+            unq_count = (Cove::DB.scalar "select count(*) from #{dbtable} where #{itemname} = $1", itemval).as(Int)
             # pp unq_count.to_i
             if unq_count.to_i != 0
                 raise Cove::ValidationError.new("The #{itemname} '#{itemval}' already exists.")
@@ -17,7 +17,7 @@ module Cove
             end
         end
         def self.if_exists(itemval, itemname, dbtable)
-            unq_count = (Cove::DB.scalar "select count(*) from #{dbtable} where username = $1", itemval).as(Int)
+            unq_count = (Cove::DB.scalar "select count(*) from #{dbtable} where #{itemname} = $1", itemval).as(Int)
             # pp unq_count.to_i
             if unq_count.to_i == 0
                 raise Cove::ValidationError.new("The #{itemname} '#{itemval}' doesn't exists.")
