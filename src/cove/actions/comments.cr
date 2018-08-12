@@ -23,10 +23,11 @@ module Cove
 
                 # Generate some data
                 unqid = UUID.random.to_s
-                
+
                 # DB operations
-                Cove::DB.exec "insert into comments (unqid, level, parent_id, post_id, content, author_id) values ($1, $2, $3, $4, $5, $6);", 
-                    unqid, level, parent_id, post_id, content, author_id
+                Cove::DB.exec "insert into comments (unqid, level, parent_id, post_id, content, author_id, author_nick) 
+                    SELECT '#{unqid}', #{level}, '#{parent_id}', '#{post_id}', '#{content}', '#{author_id}', nickname 
+                    from users where unqid = '#{author_id}'"
                 if parent_id != "none" && level > 0
                     Cove::DB.exec "UPDATE comments SET children_ids = children_ids || '{#{unqid}}' WHERE unqid = $1;", parent_id
                 end

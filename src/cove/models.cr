@@ -6,11 +6,12 @@ module Cove::Models
         property post_id : String
         property content : String
         property author_id : String
+        property author_nick : String
         property children_ids = [] of String
         # property children_arr = [] of CommentTree
         # property children_objs = {} of String => CommentTree
       
-        def initialize(@unqid, @level,  @post_id, @parent_id, @content, @author_id)
+        def initialize(@unqid, @level,  @post_id, @parent_id, @content, @author_id, @author_nick)
         end
     end
 

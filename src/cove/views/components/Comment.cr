@@ -23,7 +23,7 @@ module Cove
                         <img src="http://via.placeholder.com/50x50.png" />
                     </a>
                     <div class="content">
-                        <a class="author">Someone Mc Someone</a>
+                        <a class="author">#{cmt.author_nick}</a>
                         <div class="metadata">
                             <span class="date"><i class="clock icon"></i> Today at 5:42PM</span>
                         </div>

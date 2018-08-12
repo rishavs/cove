@@ -3,9 +3,14 @@ module Cove
         def self.new_post(ctx)
             store = Cove::Store.new
             store.currentuser = Cove::Auth.check(ctx)
+            begin
+                Cove::Validate.if_loggedin(store.currentuser)
+                ctx.response.content_type = "text/html; charset=utf-8"    
+                ctx.response.print Cove::Layout.render( store, Cove::Views.new_post)
+            rescue ex
+                Cove::Router.redirect("/e/401", ctx)
+            end
 
-            ctx.response.content_type = "text/html; charset=utf-8"    
-            ctx.response.print Cove::Layout.render( store, Cove::Views.new_post)
         end
 
         def self.create(ctx)
@@ -37,8 +42,9 @@ module Cove
                 unqid = UUID.random.to_s
                 
                 # DB operations
-                Cove::DB.exec "insert into posts (unqid, title, link, content, author_id) values ($1, $2, $3, $4, $5)", unqid, title, link, content, author_id
-
+                Cove::DB.exec "insert into posts (unqid, title, link, content, author_id, author_nick) 
+                    SELECT '#{unqid}', '#{title}', '#{link}', '#{content}', '#{author_id}', nickname 
+                    from users where unqid = '#{author_id}'"
             rescue ex
                 pp ex
                 store.status = "error"
@@ -52,25 +58,18 @@ module Cove
                 Cove::Router.redirect("/p/#{unqid}", ctx)
             end
         end
-        def self.view(level : Int, id : String)
-            ind = "|"
-            space = ""
-            (0..level).each.each do
-                space = "." + space
-            end
-            ind + space + id
-        end
+
         def self.read(ctx, postid)
             store = Cove::Store.new
             store.currentuser = Cove::Auth.check(ctx)
 
             begin
                 # Get nil if the post doesnt exists. Else get the NamedTuple
-                post = Cove::DB.query_one? "select unqid, title, content, link, author_id from posts where unqid = $1", postid, 
-                    as: {unqid: String, title: String, content: String, link: String, author_id: String}
+                post = Cove::DB.query_one? "select unqid, title, content, link, author_id, author_nick from posts where unqid = $1", postid, 
+                    as: {unqid: String, title: String, content: String, link: String, author_id: String, author_nick: String}
 
-                comments = Cove::DB.query_all "select unqid, level, post_id, parent_id, children_ids, content, author_id from comments where post_id = $1", postid,                   
-                    as: {unqid: String, level: Int, post_id: String, parent_id: String , children_ids: Array(String), content: String, author_id: String}
+                comments = Cove::DB.query_all "select unqid, level, post_id, parent_id, children_ids, content, author_id, author_nick from comments where post_id = $1", postid,                   
+                    as: {unqid: String, level: Int, post_id: String, parent_id: String , children_ids: Array(String), content: String, author_id: String, author_nick: String}
                     
                 ctree = {} of String => Cove::Models::CommentTree
                 comments.each do |comment|
@@ -81,6 +80,7 @@ module Cove
                         comment[:parent_id],
                         comment[:content],
                         comment[:author_id],
+                        comment[:author_nick],
                     )
                     node.children_ids = comment[:children_ids]
 

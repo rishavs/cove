@@ -12,7 +12,7 @@ module Cove
                 end
 
                 comments_view = <<-HTML
-                    <div class="ui threaded comments" style="max-width: 100%">
+                    <div class="ui comments" style="max-width: 100%">
                         #{comments_view}
                     </div>
                 HTML
@@ -35,7 +35,7 @@ module Cove
                                             <img src="http://via.placeholder.com/50x50.png" />
                                         </a>
                                         <div class="content">
-                                            <a class="author">Matt</a>
+                                            <a class="author">#{post_data[:author_nick]}</a>
                                             <div class="metadata">
                                                 <div class="date"> <i class="clock icon"></i> 2 days ago</div>
                                                 <div class="rating">

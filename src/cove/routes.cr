@@ -33,22 +33,23 @@ module Cove
             when {"about", "", "", "GET"}
                 Cove::Misc.about(ctx)
 
-                # Routes for Posts resource
+                # Routes for errors
+            when {"e", "401", "", "GET"}
+                Cove::Errors.error401(ctx)
+
+            # Routes for Posts resource
             when {"p", "new", "", "GET"}
                 Cove::Posts.new_post(ctx)
+ 
             when {"p", "new", "", "POST"}
                 Cove::Posts.create(ctx)
-            #     guard("anon", store.currentuser["loggedin"], ctx)
+
+            when {"p", route.identifier, "", "GET"}
+                Cove::Posts.read(ctx, route.identifier)
  
             when {"c", "new", "", "POST"}
                 Cove::Comment.create(ctx)
 
-            when {"p", route.identifier, "", "GET"}
-                Cove::Posts.read(ctx, route.identifier)
-            # # when {"post", route.identifier, "edit", "GET"}
-            # # when {"post", route.identifier, "", "GET"}
-            # # when {"/about/", "", "", "GET"}
-                            
             # Routes for Register resource
             when {"register", "", "", "GET"}
                 Cove::Register.show(ctx)
@@ -63,9 +64,6 @@ module Cove
             when {"logout","","", "GET"}
                 Cove::Login.logout(ctx)
 
-            # Specific 404 route. mainly for redirecting from dynamic routes  
-            # when {"", "", "", "GET"}
-            #     Cove::Errors.error404(ctx)
             # Catch-all routes    
             when {"", "", "", "GET"}
                 Cove::Posts.list(ctx)
@@ -75,25 +73,10 @@ module Cove
 
         end
 
-        def self.guard ( against, isloggedin, ctx)
-            if against == "user" && isloggedin == "true"
-                redirect("/", ctx)
-            elsif against == "anon" && isloggedin != "true"
-                redirect("/", ctx)
-            end
-        end
-
         def self.redirect(path, ctx)
             ctx.response.headers.add "Location", path
             ctx.response.status_code = 302
         end
 
-        def self.clean (url)
-            if !url.rstrip.ends_with?("/")
-                url + "/"
-            else
-                url
-            end
-        end
     end
 end
